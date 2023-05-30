@@ -66,6 +66,7 @@
   </template>
 
 <script lang="ts">
+import $api from '../http'
 import { defineComponent, reactive, toRefs } from 'vue';
 export default defineComponent({
   name:'LoginPage',
@@ -73,10 +74,19 @@ export default defineComponent({
   setup() {
     const state = reactive({
       form:false as boolean,
-      email:'kkkk' as string,
-      password:'' as string,
+      email:'l' as string,
+      password:'u' as string,
       loading: false as boolean,
       onSubmit: () => {
+        console.log(state.email, "ssafsadf");
+        let {email, password} = state
+        const logJSONData = async (email: string, password: string) => {
+          const JSssas = JSON.stringify({email, password})
+          const res = $api.post('api/auth/login', JSssas)
+          console.log(res);
+          
+        } 
+        logJSONData(email, password)
         if (!state.form) return
 
         state.loading = true
