@@ -1,5 +1,6 @@
 package com.yakvel.carInsuranceBackEnd.config;
 
+import com.yakvel.carInsuranceBackEnd.config.service.noOpPasswordEncoder;
 import com.yakvel.carInsuranceBackEnd.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -27,7 +28,7 @@ public class ApplicationConfig {
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService());
-        authProvider.setPasswordEncoder(passwordEncoder());
+        authProvider.setPasswordEncoder(noOpPasswordEncoder());
         return authProvider;
     }
 
@@ -40,4 +41,7 @@ public class ApplicationConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    @Bean
+    noOpPasswordEncoder noOpPasswordEncoder() {return new noOpPasswordEncoder(); }
 }

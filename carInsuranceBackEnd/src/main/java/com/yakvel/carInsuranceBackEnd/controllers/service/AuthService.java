@@ -20,7 +20,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authManager;
 
-    public AuthenticationResponse register(RegisterRequest request) throws AuthenticationException {
+    public void register(RegisterRequest request) throws AuthenticationException {
         var user = User.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
@@ -34,23 +34,18 @@ public class AuthService {
             String formattedString = String.format("User with email %s - is already exist", request.getEmail());
             throw new AuthenticationException(formattedString);
         }
-        var jwToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwToken)
-                .build();
     }
 
-    public AuthenticationResponse login(AuthenticationRequest request) {
-        authManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(), request.getPassword()
-                )
+    public String login(AuthenticationRequest request) {
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                request.getEmail(), request.getPassword()
         );
+        authManager.authenticate(
+                authentication
+        );
+
         var user = userRepo.findByEmail(request.getEmail())
                 .orElseThrow();
-        var jwToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwToken)
-                .build();
+        return jwtService.generateToken(user);
     }
 }
