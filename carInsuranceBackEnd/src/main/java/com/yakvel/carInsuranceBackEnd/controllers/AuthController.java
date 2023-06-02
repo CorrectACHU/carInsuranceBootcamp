@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.security.sasl.AuthenticationException;
+import javax.servlet.http.Cookie;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -33,8 +34,16 @@ public class AuthController {
             @RequestBody AuthenticationRequest request
     ) {
         String token = authService.login(request);
-        ResponseCookie responseCookie = ResponseCookie.from("Authorization", token).build();
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString()).body("The login was successful");
+
+        Cookie responseCookie = new Cookie("token", token);
+        responseCookie.setMaxAge(86400);
+        responseCookie.setPath("/");
+//        ResponseCookie responseHeader = ResponseCookie.from(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, "Set-Cookie").build();
+        return ResponseEntity
+                .ok()
+                .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, "Set-Cookie")
+                .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+                .body("The login was successful");
     }
 
 }
