@@ -1,6 +1,6 @@
 package com.yakvel.carInsuranceBackEnd.config;
 
-import com.yakvel.carInsuranceBackEnd.config.service.noOpPasswordEncoder;
+import com.yakvel.carInsuranceBackEnd.config.service.TokenFilteringPasswordEncoder;
 import com.yakvel.carInsuranceBackEnd.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -25,10 +25,10 @@ public class ApplicationConfig {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found."));
     }
     @Bean
-    public AuthenticationProvider authenticationProvider() {
+    public AuthenticationProvider authenticationProvider(TokenFilteringPasswordEncoder tokenFilteringPasswordEncoder) {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService());
-        authProvider.setPasswordEncoder(noOpPasswordEncoder());
+        authProvider.setPasswordEncoder(tokenFilteringPasswordEncoder);
         return authProvider;
     }
 
@@ -42,6 +42,4 @@ public class ApplicationConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    noOpPasswordEncoder noOpPasswordEncoder() {return new noOpPasswordEncoder(); }
 }

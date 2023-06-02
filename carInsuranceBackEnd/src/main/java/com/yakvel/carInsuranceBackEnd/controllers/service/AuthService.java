@@ -1,7 +1,7 @@
 package com.yakvel.carInsuranceBackEnd.controllers.service;
 
-import com.yakvel.carInsuranceBackEnd.jwt.JwtService;
 import com.yakvel.carInsuranceBackEnd.enums.Role;
+import com.yakvel.carInsuranceBackEnd.jwt.JwtService;
 import com.yakvel.carInsuranceBackEnd.models.User;
 import com.yakvel.carInsuranceBackEnd.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -44,8 +44,6 @@ public class AuthService {
                 authentication
         );
 
-        var user = userRepo.findByEmail(request.getEmail())
-                .orElseThrow();
-        return jwtService.generateToken(user);
+        return jwtService.generateToken(authentication.getPrincipal().toString());
     }
 }

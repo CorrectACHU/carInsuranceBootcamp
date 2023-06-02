@@ -4,7 +4,6 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -16,6 +15,12 @@ public class JwtService {
 
     @Value("${secret.key}")
     private String SECRET_KEY;
+    private final JwtParserBuilder jwtParserBuilder;
+
+    public JwtService(JwtParserBuilder jwtParserBuilder) {
+        this.jwtParserBuilder = jwtParserBuilder;
+    }
+
 
     public String extractUsername(String token) {
         return extractClaim(token).getSubject();
@@ -25,18 +30,18 @@ public class JwtService {
         return extractAllClaims(token);
     }
 
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+    public String generateToken(String username) {
+        return generateToken(new HashMap<>(), username);
     }
 
     public String generateToken(
             Map<String, Object> extraClaims,
-            UserDetails userDetails
+            String username
     ) {
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
-                .setSubject(userDetails.getUsername())
+                .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000*3600))
                 .signWith(SignatureAlgorithm.HS256, getSignKey())
@@ -45,8 +50,7 @@ public class JwtService {
 
     private Claims extractAllClaims(String token) {
         try {
-            return Jwts
-                    .parserBuilder()
+            return jwtParserBuilder
                     .setSigningKey(Keys.hmacShaKeyFor(getSignKey()))
                     .build()
                     .parseClaimsJws(token)
@@ -63,4 +67,5 @@ public class JwtService {
     private byte[] getSignKey() {
         return SECRET_KEY.getBytes();
     }
+
 }

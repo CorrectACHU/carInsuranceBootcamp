@@ -1,9 +1,13 @@
 package com.yakvel.carInsuranceBackEnd.config.service;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
-public class noOpPasswordEncoder implements PasswordEncoder {
+@RequiredArgsConstructor
+@Component
+public class TokenFilteringPasswordEncoder implements PasswordEncoder {
+    private final PasswordEncoder passwordEncoder;
     @Override
     public String encode(CharSequence rawPassword) {
         return rawPassword.toString();
@@ -14,7 +18,9 @@ public class noOpPasswordEncoder implements PasswordEncoder {
         if ("token".contentEquals(rawPassword)) {
             return true;
         } else {
-            return new BCryptPasswordEncoder().matches(encode(rawPassword), encodedPassword);
+            return passwordEncoder.matches(rawPassword, encodedPassword);
         }
     }
 }
+
+
