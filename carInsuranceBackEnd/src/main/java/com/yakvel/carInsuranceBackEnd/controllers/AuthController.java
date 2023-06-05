@@ -3,6 +3,7 @@ package com.yakvel.carInsuranceBackEnd.controllers;
 
 import com.yakvel.carInsuranceBackEnd.controllers.service.AuthService;
 import com.yakvel.carInsuranceBackEnd.controllers.service.AuthenticationRequest;
+import com.yakvel.carInsuranceBackEnd.controllers.service.AuthenticationResponse;
 import com.yakvel.carInsuranceBackEnd.controllers.service.RegisterRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -38,11 +39,13 @@ public class AuthController {
         Cookie responseCookie = new Cookie("token", token);
         responseCookie.setMaxAge(86400);
         responseCookie.setPath("/");
+        System.out.println(responseCookie.getValue());
+
 //        ResponseCookie responseHeader = ResponseCookie.from(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, "Set-Cookie").build();
         return ResponseEntity
                 .ok()
                 .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, "Set-Cookie")
-                .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, responseCookie.getValue())
                 .body("The login was successful");
     }
 

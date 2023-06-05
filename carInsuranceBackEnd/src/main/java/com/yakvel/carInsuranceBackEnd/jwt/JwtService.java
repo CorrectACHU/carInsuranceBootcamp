@@ -58,9 +58,11 @@ public class JwtService {
 
     @Bean
     public JwtParser parserBuilder() {
+        System.out.println(getSignKey().toString());
         return Jwts.parserBuilder().setSigningKey(getSignKey()).build();
     }
 
+    @Bean
     private byte[] getSignKey() {
         return SECRET_KEY.getBytes();
     }
