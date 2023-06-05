@@ -1,9 +1,9 @@
 package com.yakvel.carInsuranceBackEnd.jwt;
 
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -15,12 +15,6 @@ public class JwtService {
 
     @Value("${secret.key}")
     private String SECRET_KEY;
-    private final JwtParserBuilder jwtParserBuilder;
-
-    public JwtService(JwtParserBuilder jwtParserBuilder) {
-        this.jwtParserBuilder = jwtParserBuilder;
-    }
-
 
     public String extractUsername(String token) {
         return extractClaim(token).getSubject();
@@ -43,16 +37,14 @@ public class JwtService {
                 .setClaims(extraClaims)
                 .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000*3600))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 3600))
                 .signWith(SignatureAlgorithm.HS256, getSignKey())
                 .compact();
     }
 
     private Claims extractAllClaims(String token) {
         try {
-            return jwtParserBuilder
-                    .setSigningKey(Keys.hmacShaKeyFor(getSignKey()))
-                    .build()
+            return parserBuilder()
                     .parseClaimsJws(token)
                     .getBody();
         } catch (ExpiredJwtException e) {
@@ -64,8 +56,12 @@ public class JwtService {
         }
     }
 
+    @Bean
+    public JwtParser parserBuilder() {
+        return Jwts.parserBuilder().setSigningKey(getSignKey()).build();
+    }
+
     private byte[] getSignKey() {
         return SECRET_KEY.getBytes();
     }
-
 }

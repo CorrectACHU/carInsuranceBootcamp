@@ -10,7 +10,7 @@ public class TokenFilteringPasswordEncoder implements PasswordEncoder {
     private final PasswordEncoder passwordEncoder;
     @Override
     public String encode(CharSequence rawPassword) {
-        return rawPassword.toString();
+        return passwordEncoder.encode(rawPassword);
     }
 
     @Override
