@@ -1,11 +1,14 @@
 package com.yakvel.carInsuranceBackEnd.jwt;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
+import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +41,7 @@ public class JwtService {
                 .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 3600))
-                .signWith(SignatureAlgorithm.HS256, getSignKey())
+                .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -63,7 +66,8 @@ public class JwtService {
     }
 
     @Bean
-    private byte[] getSignKey() {
-        return SECRET_KEY.getBytes();
+    private Key getSignKey() {
+        byte[] decode = Decoders.BASE64.decode(SECRET_KEY);
+        return Keys.hmacShaKeyFor(decode);
     }
 }
