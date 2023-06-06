@@ -7,6 +7,7 @@ import com.yakvel.carInsuranceBackEnd.controllers.service.RegisterRequest;
 import com.yakvel.carInsuranceBackEnd.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,18 +34,25 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(
-            @RequestBody AuthenticationRequest request,
-            HttpServletResponse httpServletResponse,
-            HttpServletRequest httpServletRequest
+            @RequestBody AuthenticationRequest request
     ) {
         String token = authService.login(request);
 
-        Cookie cookie = new Cookie( "token", token );
-        cookie.setMaxAge( 86400 );
-        cookie.setPath( "/" );
-        httpServletResponse.addCookie( cookie );
-        httpServletResponse.setHeader( HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, "Set-Cookie" );
-        return ResponseEntity.ok("Les goooo");
+        ResponseCookie cookie = getResponseCookie(token);
+        return ResponseEntity
+                .ok()
+                .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, "Set-Cookie")
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body("The login was succeed");
     }
+
+    private static ResponseCookie getResponseCookie(String token) {
+        return ResponseCookie
+                .from("token", token)
+                .path("/")
+                .maxAge(86400)
+                .build();
+    }
+
 
 }

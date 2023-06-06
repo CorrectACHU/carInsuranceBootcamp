@@ -1,11 +1,8 @@
 package com.yakvel.carInsuranceBackEnd.jwt;
 
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
@@ -15,9 +12,14 @@ import java.util.Map;
 
 @Service
 public class JwtService {
+    @Autowired
+    private final Key signKey;
+    private final JwtParser parserBuilder;
 
-    @Value("${secret.key}")
-    private String SECRET_KEY;
+    public JwtService(Key signKey, JwtParser parserBuilder) {
+        this.signKey = signKey;
+        this.parserBuilder = parserBuilder;
+    }
 
     public String extractUsername(String token) {
         return extractClaim(token).getSubject();
@@ -41,13 +43,13 @@ public class JwtService {
                 .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 3600))
-                .signWith(getSignKey(), SignatureAlgorithm.HS256)
+                .signWith(signKey, SignatureAlgorithm.HS256)
                 .compact();
     }
 
     private Claims extractAllClaims(String token) {
         try {
-            return parserBuilder()
+            return parserBuilder
                     .parseClaimsJws(token)
                     .getBody();
         } catch (ExpiredJwtException e) {
@@ -57,17 +59,5 @@ public class JwtService {
         } catch (SignatureException e) {
             throw new RuntimeException("token is invalid");
         }
-    }
-
-    @Bean
-    public JwtParser parserBuilder() {
-        System.out.println(getSignKey().toString());
-        return Jwts.parserBuilder().setSigningKey(getSignKey()).build();
-    }
-
-    @Bean
-    private Key getSignKey() {
-        byte[] decode = Decoders.BASE64.decode(SECRET_KEY);
-        return Keys.hmacShaKeyFor(decode);
     }
 }
