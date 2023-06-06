@@ -4,7 +4,6 @@ package com.yakvel.carInsuranceBackEnd.controllers;
 import com.yakvel.carInsuranceBackEnd.controllers.service.AuthService;
 import com.yakvel.carInsuranceBackEnd.controllers.service.AuthenticationRequest;
 import com.yakvel.carInsuranceBackEnd.controllers.service.RegisterRequest;
-import com.yakvel.carInsuranceBackEnd.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -12,9 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.security.sasl.AuthenticationException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/api/auth")

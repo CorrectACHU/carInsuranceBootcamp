@@ -2,8 +2,8 @@ package com.yakvel.carInsuranceBackEnd.controllers.service;
 
 import com.yakvel.carInsuranceBackEnd.enums.Role;
 import com.yakvel.carInsuranceBackEnd.jwt.JwtService;
-import com.yakvel.carInsuranceBackEnd.models.User;
-import com.yakvel.carInsuranceBackEnd.repositories.UserRepository;
+import com.yakvel.carInsuranceBackEnd.models.Person;
+import com.yakvel.carInsuranceBackEnd.repositories.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,18 +15,18 @@ import javax.security.sasl.AuthenticationException;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    private final UserRepository userRepo;
+    private final PersonRepository userRepo;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authManager;
 
     public void register(RegisterRequest request) throws AuthenticationException {
-        var user = User.builder()
+        var user = Person.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.USER)
+                .role(request.getRole())
                 .build();
         try {
             userRepo.save(user);

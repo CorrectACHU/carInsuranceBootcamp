@@ -1,7 +1,7 @@
 package com.yakvel.carInsuranceBackEnd.config;
 
 import com.yakvel.carInsuranceBackEnd.config.service.TokenFilteringPasswordEncoder;
-import com.yakvel.carInsuranceBackEnd.repositories.UserRepository;
+import com.yakvel.carInsuranceBackEnd.repositories.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
-    private final UserRepository repository;
+    private final PersonRepository repository;
 
     @Bean
     public UserDetailsService userDetailsService() {

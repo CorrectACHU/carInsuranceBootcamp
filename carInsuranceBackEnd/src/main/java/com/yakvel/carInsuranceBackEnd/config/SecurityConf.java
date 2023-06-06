@@ -15,7 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConf{
+public class SecurityConf {
 
     private final AuthenticationProvider authProvider;
 
@@ -23,9 +23,12 @@ public class SecurityConf{
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
         http
                 .csrf().disable()
-                .authorizeRequests(request ->
-                request.antMatchers("/api/auth/**").permitAll()
-                .anyRequest().authenticated())
+                .authorizeRequests()
+                                .antMatchers("/api/v1/user/**").hasAuthority("USER")
+                                .antMatchers("/api/v1/manager/**").hasAuthority("MANAGER")
+                                .antMatchers("/api/auth/**", "/api/v1/").permitAll()
+                                .anyRequest().authenticated()
+                .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authenticationProvider(authProvider)
