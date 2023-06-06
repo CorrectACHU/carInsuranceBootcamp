@@ -12,13 +12,12 @@ import java.util.Map;
 
 @Service
 public class JwtService {
-    @Autowired
     private final Key signKey;
-    private final JwtParser parserBuilder;
+    private final JwtParser jwtParser;
 
-    public JwtService(Key signKey, JwtParser parserBuilder) {
+    public JwtService(Key signKey, JwtParser jwtParser) {
         this.signKey = signKey;
-        this.parserBuilder = parserBuilder;
+        this.jwtParser = jwtParser;
     }
 
     public String extractUsername(String token) {
@@ -49,7 +48,7 @@ public class JwtService {
 
     private Claims extractAllClaims(String token) {
         try {
-            return parserBuilder
+            return jwtParser
                     .parseClaimsJws(token)
                     .getBody();
         } catch (ExpiredJwtException e) {

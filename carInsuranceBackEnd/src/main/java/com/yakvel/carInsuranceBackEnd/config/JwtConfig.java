@@ -1,4 +1,4 @@
-package com.yakvel.carInsuranceBackEnd.jwt;
+package com.yakvel.carInsuranceBackEnd.config;
 
 
 import io.jsonwebtoken.JwtParser;
@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
 import java.security.Key;
 
 @Configuration
-@RequiredArgsConstructor
 public class JwtConfig {
 
 
@@ -21,12 +20,12 @@ public class JwtConfig {
     private String SECRET_KEY;
 
     @Bean
-    public JwtParser parserBuilder() {
-        return Jwts.parserBuilder().setSigningKey(getSignKey()).build();
+    public JwtParser jwtParser() {
+        return Jwts.parserBuilder().setSigningKey(secretKey()).build();
     }
 
     @Bean
-    public Key getSignKey() {
+    public Key secretKey() {
         byte[] decode = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(decode);
     }
