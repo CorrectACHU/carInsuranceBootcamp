@@ -32,6 +32,7 @@ public class AuthController {
         return ResponseEntity.ok("New user was created!");
     }
 
+    @CrossOrigin("http://localhost:5173/")
     @PostMapping("/login")
     public ResponseEntity<String> login(
             @RequestBody AuthenticationRequest request
