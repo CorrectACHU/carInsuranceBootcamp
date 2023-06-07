@@ -22,12 +22,12 @@ public class PersonDataLoader implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         if (personRepository.count() < 5) {
             List<Person> people = List.of(
-                    new Person("John", "Doe", "po1@g.com", passwordEncoder.encode("123"), "USER"),
-                    new Person("Mary", "Doe", "po2@g.com", passwordEncoder.encode("123"), "USER"),
-                    new Person("Steven", "Doe", "po3@g.com", passwordEncoder.encode("123"), "USER"),
-                    new Person("Jason", "Sparkles", "mn1@g.com", passwordEncoder.encode("123"), "MANAGER"),
-                    new Person("Misery", "Sparkles", "mn2@g.com", passwordEncoder.encode("123"), "MANAGER"),
-                    new Person("Egor", "Sparkles", "mn3@g.com", passwordEncoder.encode("123"), "MANAGER")
+                    new Person("John", "Doe", "po1@g.com", passwordEncoder.encode("ss1$Hsss"), "USER"),
+                    new Person("Mary", "Doe", "po2@g.com", passwordEncoder.encode("ss1$Hsss"), "USER"),
+                    new Person("Steven", "Doe", "po3@g.com", passwordEncoder.encode("ss1$Hsss"), "USER"),
+                    new Person("Jason", "Sparkles", "mn1@g.com", passwordEncoder.encode("ss1$Hsss"), "MANAGER"),
+                    new Person("Misery", "Sparkles", "mn2@g.com", passwordEncoder.encode("ss1$Hsss"), "MANAGER"),
+                    new Person("Egor", "Sparkles", "mn3@g.com", passwordEncoder.encode("ss1$Hsss"), "MANAGER")
             );
             personRepository.saveAll(people);
         }
