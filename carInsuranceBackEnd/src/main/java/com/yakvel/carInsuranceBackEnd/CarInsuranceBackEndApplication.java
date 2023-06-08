@@ -1,7 +1,5 @@
 package com.yakvel.carInsuranceBackEnd;
 
-import com.yakvel.carInsuranceBackEnd.models.User;
-import com.yakvel.carInsuranceBackEnd.repositories.UserRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

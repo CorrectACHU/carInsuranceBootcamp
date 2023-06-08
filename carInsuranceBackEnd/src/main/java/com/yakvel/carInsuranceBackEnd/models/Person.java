@@ -20,7 +20,15 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class User implements UserDetails {
+public class Person implements UserDetails {
+    public Person(String firstName, String lastName, String email, String password, String role) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.role = Role.valueOf(role);
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long Id;
