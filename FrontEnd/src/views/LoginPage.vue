@@ -11,8 +11,8 @@
 </template>
 
 <script setup lang="ts">
-import AppHeader from '@/components/HeaderComponent.vue'
-import AppFooter from '@/components/FooterComponent.vue'
+import AppHeader from '@/components/AppHeader.vue'
+import AppFooter from '@/components/AppFooter.vue'
 import LoginForm from '@/components/LoginForm.vue'
 </script>
 
