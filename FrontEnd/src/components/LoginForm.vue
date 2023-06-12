@@ -12,14 +12,14 @@
 
       <v-text-field
         v-model="password"
-        :append-icon="show1 ? 'mdi-eye-off' : 'mdi-eye'"
+        :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
         :rules="rules.passwordRules"
-        :type="show1 ? 'text' : 'password'"
+        :type="showPassword ? 'text' : 'password'"
         name="input-10-1"
         label="Password"
         hint="At least 8 characters"
         counter
-        @click:append="show1 = !show1"
+        @click:append="showPassword = !showPassword"
       ></v-text-field>
 
       <br />
@@ -51,7 +51,7 @@ const password = ref('')
 const loading = ref(false)
 const isSuccess = ref(false)
 const isError = ref(false)
-const show1 = ref(false)
+const showPassword = ref(false)
 
 const rules = {
   required: (value: string) => !!value || 'Field is required',
