@@ -4,8 +4,6 @@
       <v-alert v-model="alert" variant="tonal" closable close-label="Close Alert" color="error">
         {{ message }}
       </v-alert>
-
-      <div v-if="!alert" class="text-center"></div>
     </div>
     <v-form v-model="form" @submit.prevent="submit">
       <v-text-field
@@ -54,8 +52,8 @@ const loading = ref(false)
 const isSuccess = ref(false)
 const isError = ref(false)
 
-let alert = ref(false)
-let message = ref('')
+const alert = ref(false)
+const message = ref('')
 
 const submit = async () => {
   try {
