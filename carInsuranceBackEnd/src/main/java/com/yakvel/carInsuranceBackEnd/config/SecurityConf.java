@@ -11,6 +11,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -20,14 +22,27 @@ public class SecurityConf {
     private final AuthenticationProvider authProvider;
 
     @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOrigins("http://localhost:5173")
+                        .allowCredentials(true)
+                        .allowedMethods("GET", "POST", "PATCH", "DELETE");
+            }
+        };
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                                .antMatchers("/api/v1/user/**").hasAuthority("USER")
-                                .antMatchers("/api/v1/manager/**").hasAuthority("MANAGER")
-                                .antMatchers("/api/auth/**", "/api/v1/").permitAll()
-                                .anyRequest().authenticated()
+                .antMatchers("/api/v1/user/**").hasAuthority("USER")
+                .antMatchers("/api/v1/manager/**").hasAuthority("MANAGER")
+                .antMatchers("/api/auth/**", "/api/v1/").permitAll()
+                .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
