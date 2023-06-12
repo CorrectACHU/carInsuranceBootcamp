@@ -1,5 +1,10 @@
 <template>
   <v-card class="mx-auto px-6 py-8 cardSize">
+    <div>
+      <v-alert v-model="alert" variant="tonal" closable close-label="Close Alert" color="error">
+        {{ message }}
+      </v-alert>
+    </div>
     <v-form v-model="form" @submit.prevent="submit">
       <v-text-field
         v-model="email"
@@ -67,6 +72,9 @@ const rules = {
   ]
 }
 
+const alert = ref(false)
+const message = ref('')
+
 const submit = async () => {
   try {
     const response = await fetch('http://localhost:8080/api/auth/login', {
@@ -85,11 +93,13 @@ const submit = async () => {
       isSuccess.value = true
       isError.value = false
       router.push('/')
-    } else {
-      throw new Error('Request failed')
+    } else if (response.status === 403) {
+      alert.value = true
+      message.value = 'User with this email and password does not exist'
     }
   } catch (error) {
-    console.error(error)
+    alert.value = true
+    message.value = 'Something went wrong, please try reloading the page'
     isSuccess.value = false
     isError.value = true
   }
