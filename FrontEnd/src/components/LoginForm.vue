@@ -7,14 +7,19 @@
         class="mb-2"
         clearable
         label="Email"
+        :rules="[rules.required, rules.emailRule]"
       ></v-text-field>
 
       <v-text-field
         v-model="password"
-        :readonly="loading"
-        clearable
+        :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+        :rules="rules.passwordRules"
+        :type="showPassword ? 'text' : 'password'"
+        name="input-10-1"
         label="Password"
-        placeholder="Enter your password"
+        hint="At least 8 characters"
+        counter
+        @click:append="showPassword = !showPassword"
       ></v-text-field>
 
       <br />
@@ -46,6 +51,21 @@ const password = ref('')
 const loading = ref(false)
 const isSuccess = ref(false)
 const isError = ref(false)
+const showPassword = ref(false)
+
+const rules = {
+  required: (value: string) => !!value || 'Field is required',
+  emailRule: (value: string) =>
+    !value || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) || 'E-mail must be valid',
+  passwordRules: [
+    (value: string) => !!value || 'Please enter a password',
+    (value: string) => !!value || 'Please type password.',
+    (value: string) => (value && /\d/.test(value)) || 'At least one digit',
+    (value: string) => (value && /[A-Z]{1}/.test(value)) || 'At least one capital latter',
+    (value: string) => (value && /[^A-Za-z0-9]/.test(value)) || 'At least one special character',
+    (value: string) => value.length >= 8 || 'minimum 8 characters'
+  ]
+}
 
 const submit = async () => {
   try {
@@ -57,7 +77,8 @@ const submit = async () => {
       body: JSON.stringify({
         email: email.value,
         password: password.value
-      })
+      }),
+      credentials: 'include'
     })
 
     if (response.ok) {
