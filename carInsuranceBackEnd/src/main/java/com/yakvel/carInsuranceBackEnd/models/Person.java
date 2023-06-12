@@ -1,6 +1,5 @@
 package com.yakvel.carInsuranceBackEnd.models;
 
-import com.yakvel.carInsuranceBackEnd.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,31 +20,23 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 public class Person implements UserDetails {
-    public Person(String firstName, String lastName, String email, String password, String role) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-        this.role = Role.valueOf(role);
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long Id;
-
-    private String firstName;
-    private String lastName;
 
     @Column(unique = true)
     private String email;
 
     private String password;
-    @Enumerated(EnumType.STRING)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "contact_id", referencedColumnName = "id")
+    private Contact contactInfo;
+    @ManyToOne(cascade = CascadeType.ALL)
     private Role role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        return List.of(new SimpleGrantedAuthority(role.getRole()));
     }
 
     @Override
