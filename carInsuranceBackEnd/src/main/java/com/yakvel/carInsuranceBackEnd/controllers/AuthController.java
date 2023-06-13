@@ -15,7 +15,6 @@ import javax.security.sasl.AuthenticationException;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173/", allowCredentials = "true")
 public class AuthController {
 
     private final AuthService authService;
@@ -28,7 +27,6 @@ public class AuthController {
         return ResponseEntity.ok("New user was created!");
     }
 
-    @CrossOrigin("http://localhost:5173/")
     @PostMapping("/login")
     public ResponseEntity<String> login(
             @RequestBody AuthenticationRequest request

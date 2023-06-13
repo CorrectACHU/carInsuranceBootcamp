@@ -22,11 +22,11 @@ public class Contact {
     private String firstName;
     private String lastName;
     private String email;
-    @OneToMany
-    @JoinColumn(name = "phones_ids")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "contact_id")
     private Set<Phone> phones;
-    @OneToMany
-    @JoinColumn(name = "addresses_ids")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "contact_id")
     private Set<Address> addresses;
     private String notes;
 

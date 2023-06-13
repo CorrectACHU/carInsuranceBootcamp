@@ -49,7 +49,7 @@ public class Ticket {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "other_charge_id", referencedColumnName = "id")
     private OtherCharge other_charge;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "tickets_contacts",
             joinColumns = @JoinColumn(name = "ticket_id"),
