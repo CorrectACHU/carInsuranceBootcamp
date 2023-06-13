@@ -30,11 +30,11 @@ public class Ticket {
     private Person ticket_owner;
 
     @ManyToOne
-    @JoinColumn(name="manager_id", nullable=false)
+    @JoinColumn(name="manager_id")
     private Person current_manager;
 
     @ManyToOne
-    @JoinColumn(name="estimator_id", nullable=false)
+    @JoinColumn(name="estimator_id")
     private Person current_estimator;
     @Enumerated(EnumType.STRING)
     private TicketStatus ticketStatus;

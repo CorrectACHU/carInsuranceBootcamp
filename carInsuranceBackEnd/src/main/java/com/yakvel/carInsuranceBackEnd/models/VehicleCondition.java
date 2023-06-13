@@ -23,6 +23,6 @@ public class VehicleCondition {
 
     @Enumerated(EnumType.STRING)
     private ImpactDirection impact_direction;
-    //text_array
+    //TODO: text_array
     private ArrayList<String> photos;
 }
