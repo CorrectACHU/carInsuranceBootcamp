@@ -14,7 +14,7 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder
 @Data
-public class PersonDetailsResponse {
+public class PersonDto {
     private String email;
     private String firstName;
     private String lastName;

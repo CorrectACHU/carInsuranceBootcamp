@@ -1,19 +1,21 @@
 package com.yakvel.carInsuranceBackEnd.controllers.user.service;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.yakvel.carInsuranceBackEnd.models.Address;
 import com.yakvel.carInsuranceBackEnd.models.Phone;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.Set;
 
-@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class PersonContactRequest {
+@Data
+public class ContactDto {
+    private String email;
     private String firstName;
     private String lastName;
     private Set<Phone> phones;
