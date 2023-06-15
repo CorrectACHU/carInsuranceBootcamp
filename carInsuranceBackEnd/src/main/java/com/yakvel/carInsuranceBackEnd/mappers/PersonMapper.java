@@ -9,11 +9,17 @@ import org.springframework.stereotype.Component;
 public class PersonMapper implements ItemMapper<PersonDto,Person>{
 
     @Override
+    public Person toEntity(PersonDto dto) {
+        return null;
+    }
+
+    @Override
     public PersonDto toDto(Person person) {
         Contact contactInfo = person.getContactInfo();
         if (contactInfo != null) {
             return PersonDto.builder()
                     .email(person.getEmail())
+                    .insuranceCompany(person.getInsuranceCompany())
                     .firstName(contactInfo.getFirstName())
                     .lastName(contactInfo.getLastName())
                     .phones(contactInfo.getPhones())
@@ -25,10 +31,5 @@ public class PersonMapper implements ItemMapper<PersonDto,Person>{
                 .builder()
                 .email(person.getEmail())
                 .build();
-    }
-
-    @Override
-    public Person toEntity(PersonDto dto) {
-        return null;
     }
 }

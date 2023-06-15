@@ -29,7 +29,7 @@ public class Contact {
     @JoinColumn(name = "contact_id")
     private Set<Address> addresses;
     private String notes;
-    @ManyToMany(mappedBy = "other_contacts")
+    @ManyToMany(mappedBy = "otherContacts")
     private Set<Ticket> tickets;
 
 }

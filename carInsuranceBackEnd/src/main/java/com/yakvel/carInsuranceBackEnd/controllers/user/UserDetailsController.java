@@ -4,11 +4,9 @@ package com.yakvel.carInsuranceBackEnd.controllers.user;
 import com.yakvel.carInsuranceBackEnd.controllers.user.service.ContactDto;
 import com.yakvel.carInsuranceBackEnd.controllers.user.service.PersonChangePassRequest;
 import com.yakvel.carInsuranceBackEnd.controllers.user.service.PersonDto;
-import com.yakvel.carInsuranceBackEnd.mappers.ContactMapper;
-import com.yakvel.carInsuranceBackEnd.mappers.PersonMapper;
+import com.yakvel.carInsuranceBackEnd.mappers.ItemMapper;
 import com.yakvel.carInsuranceBackEnd.models.Contact;
 import com.yakvel.carInsuranceBackEnd.models.Person;
-import com.yakvel.carInsuranceBackEnd.repositories.ContactRepository;
 import com.yakvel.carInsuranceBackEnd.repositories.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,26 +20,25 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserDetailsController {
     @Autowired
-    private ContactMapper contactMapper;
-
+    private ItemMapper<ContactDto,Contact> contactMapper;
     @Autowired
-    private PersonMapper personMapper;
+    private ItemMapper<PersonDto,Person> personMapper;
     @Autowired
     private PersonRepository personRepository;
-    @Autowired
-    private ContactRepository contactRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @GetMapping("/profile")
     public ResponseEntity<PersonDto> currentUserDetails() {
-        Person person = getPerson();
+        Person person = (Person) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         return  ResponseEntity.ok(personMapper.toDto(person));
     }
 
     @PutMapping("/profile")
     public ResponseEntity<String> updateUserContact(@RequestBody ContactDto dto) {
-        Person person = getPerson();
+        Person person = (Person) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         Contact updatedPersonContact = contactMapper.toEntity(dto);
         person.setContactInfo(updatedPersonContact);
         personRepository.save(person);
@@ -51,15 +48,15 @@ public class UserDetailsController {
 
     @PutMapping("/profile/change-pass")
     public ResponseEntity changePersonPassword(@RequestBody PersonChangePassRequest request) {
-        Person person = getPerson();
+        Person person = (Person) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        boolean isPassCorrect = checkPassword(request.getOldPassword(), person.getPassword());
-
-        boolean isPasswordsDiff = checkTwoEnteredPasswords(request.getOldPassword(), request.getNewPassword());
-
+        boolean isPassCorrect = checkActualPasswordMatch(request.getOldPassword(), person.getPassword());
         if (!isPassCorrect) {
             return ResponseEntity.badRequest().body("Entered actual password is not correct");
-        } else if (!isPasswordsDiff) {
+        }
+
+        boolean isPasswordsDiff = checkTwoEnteredPasswordsAreDifferent(request.getOldPassword(), request.getNewPassword());
+        if (!isPasswordsDiff) {
             return ResponseEntity.badRequest().body("Entered passwords are identical!");
         }
 
@@ -69,17 +66,12 @@ public class UserDetailsController {
 
     }
 
-    private boolean checkTwoEnteredPasswords(String oldPassword, String newPassword) {
+    private boolean checkTwoEnteredPasswordsAreDifferent(String oldPassword, String newPassword) {
         return !oldPassword.equals(newPassword);
     }
 
-    private boolean checkPassword(String enteredOldPassword, String oldPassword) {
+    private boolean checkActualPasswordMatch(String enteredOldPassword, String oldPassword) {
         return passwordEncoder.matches(enteredOldPassword, oldPassword);
     }
 
-
-    private Person getPerson() {
-        return (Person) SecurityContextHolder
-                .getContext().getAuthentication().getPrincipal();
-    }
 }

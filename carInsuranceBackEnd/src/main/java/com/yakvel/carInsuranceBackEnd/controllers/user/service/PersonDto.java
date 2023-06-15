@@ -16,6 +16,7 @@ import java.util.Set;
 @Data
 public class PersonDto {
     private String email;
+    private String insuranceCompany;
     private String firstName;
     private String lastName;
     private Set<Phone> phones;

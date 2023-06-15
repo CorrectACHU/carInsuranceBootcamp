@@ -7,6 +7,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class ContactMapper implements ItemMapper<ContactDto, Contact>{
     @Override
+    public ContactDto toDto(Contact contact) {
+        return null;
+    }
+
+    @Override
     public Contact toEntity(ContactDto request) {
         return Contact.builder()
                 .email(request.getEmail())
@@ -16,10 +21,5 @@ public class ContactMapper implements ItemMapper<ContactDto, Contact>{
                 .addresses(request.getAddresses())
                 .notes(request.getNotes())
                 .build();
-    }
-
-    @Override
-    public ContactDto toDto(Contact contact) {
-        return null;
     }
 }

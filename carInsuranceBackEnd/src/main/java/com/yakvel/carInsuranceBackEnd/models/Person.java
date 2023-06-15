@@ -34,6 +34,8 @@ public class Person implements UserDetails {
     @ManyToOne(cascade = CascadeType.ALL)
     private Role role;
 
+    private String insuranceCompany;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.getRole()));
