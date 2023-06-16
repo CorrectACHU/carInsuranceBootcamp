@@ -23,5 +23,4 @@ public class VehicleCondition {
     @Enumerated(EnumType.STRING)
     private ImpactDirection impactDirection;
     private String photoFileNames;
-    private long ticketId;
 }

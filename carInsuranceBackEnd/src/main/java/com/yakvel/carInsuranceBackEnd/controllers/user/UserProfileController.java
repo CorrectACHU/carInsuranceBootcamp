@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/user/")
 @RequiredArgsConstructor
-public class UserDetailsController {
+public class UserProfileController {
     @Autowired
     private ItemMapper<ContactDto,Contact> contactMapper;
     @Autowired

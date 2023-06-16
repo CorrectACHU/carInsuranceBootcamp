@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
 @Log4j2
-public class UserMainPageController {
+public class UserTicketPagesController {
     @Autowired
     private PhotoHandlingService photoHandlingService;
 

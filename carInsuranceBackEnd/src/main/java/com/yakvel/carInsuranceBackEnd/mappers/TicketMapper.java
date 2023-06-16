@@ -13,6 +13,7 @@ public class TicketMapper implements ItemMapper<TicketDto, Ticket>{
                 .dateOfIncident(ticketDto.getDateOfIncident())
                 .vehicleInfo(ticketDto.getVehicleInfo())
                 .vehicleCondition(ticketDto.getVehicleCondition())
+                .estimatedParts(ticketDto.getEstimatedParts())
                 .otherCharge(ticketDto.getOtherCharge())
                 .otherContacts(ticketDto.getOtherContacts())
                 .build();

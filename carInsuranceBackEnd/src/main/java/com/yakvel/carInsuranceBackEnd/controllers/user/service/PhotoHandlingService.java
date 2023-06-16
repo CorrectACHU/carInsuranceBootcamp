@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 @Service
 @Log4j2
 public class PhotoHandlingService {
-
+    static final Pattern pattern = Pattern.compile("[.][A-z]*");
     @Value("${upload.photo}")
     private String uploadPhotoPath;
 
@@ -65,7 +65,6 @@ public class PhotoHandlingService {
     }
 
     private String getExtractedFileExtension(String fileName) {
-        Pattern pattern = Pattern.compile("[.][A-z]*");
         Matcher matcher = pattern.matcher(fileName);
         if (matcher.find()) {
             return matcher.group();
