@@ -23,7 +23,7 @@ public class EstimatedPart {
     @Enumerated(EnumType.STRING)
     private EstimateType estimateType;
     private String description;
-    private String labor_hours;
+    private String laborHours;
     private String price;
-    private String labor_rate;
+    private String laborRate;
 }

@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/manager")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173/")
 
 public class ManagerMainPageController {
 

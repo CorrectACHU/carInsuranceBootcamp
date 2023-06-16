@@ -22,10 +22,10 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name="person_id", nullable=false)
-    private Person comment_owner;
+    private Person commentOwner;
     @ManyToOne
     @JoinColumn(name = "comments")
-    private Ticket ticket_id;
+    private Ticket ticketId;
     private String body;
     private LocalDateTime createdDate;
 }

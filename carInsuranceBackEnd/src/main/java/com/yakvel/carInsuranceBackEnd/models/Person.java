@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 
-@Table(name = "users")
+@Table(name = "people")
 @Data
 @Builder
 @NoArgsConstructor
@@ -28,11 +28,13 @@ public class Person implements UserDetails {
     private String email;
 
     private String password;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "contact_id", referencedColumnName = "id")
     private Contact contactInfo;
     @ManyToOne(cascade = CascadeType.ALL)
     private Role role;
+
+    private String insuranceCompany;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

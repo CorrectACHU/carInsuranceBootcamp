@@ -15,7 +15,6 @@ import java.util.List;
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class DumController {
-    private final PersonRepository personRepository;
     @Autowired
     private PersonRepository userRep;
 

@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 
 @Table(name = "vehicle_conditions")
 @Data
@@ -22,7 +21,6 @@ public class VehicleCondition {
     private long id;
 
     @Enumerated(EnumType.STRING)
-    private ImpactDirection impact_direction;
-    //text_array
-    private ArrayList<String> photos;
+    private ImpactDirection impactDirection;
+    private String photoFileNames;
 }

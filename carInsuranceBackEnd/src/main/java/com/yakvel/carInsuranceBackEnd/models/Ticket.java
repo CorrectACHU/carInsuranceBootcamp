@@ -23,41 +23,43 @@ public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private LocalDateTime date_of_incident;
+    private LocalDateTime dateOfIncident;
 
     @ManyToOne
     @JoinColumn(name="person_id", nullable=false)
-    private Person ticket_owner;
+    private Person ticketOwner;
 
     @ManyToOne
-    @JoinColumn(name="manager_id", nullable=false)
-    private Person current_manager;
+    @JoinColumn(name="manager_id")
+    private Person currentManager;
 
     @ManyToOne
-    @JoinColumn(name="estimator_id", nullable=false)
-    private Person current_estimator;
+    @JoinColumn(name="estimator_id")
+    private Person currentEstimator;
     @Enumerated(EnumType.STRING)
     private TicketStatus ticketStatus;
-    private String vehicle_info;
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne
+    @JoinColumn(name="vehicle_id")
+    private VehicleInformation vehicleInfo;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "vehicle_condition_id", referencedColumnName = "id")
-    private VehicleCondition vehicle_condition;
+    private VehicleCondition vehicleCondition;
     @OneToMany
     @JoinColumn(name = "estimated_parts_ids")
-    private Set<EstimatedPart> estimated_parts;
+    private Set<EstimatedPart> estimatedParts;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "other_charge_id", referencedColumnName = "id")
-    private OtherCharge other_charge;
-    @ManyToMany
+    private OtherCharge otherCharge;
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "tickets_contacts",
             joinColumns = @JoinColumn(name = "ticket_id"),
             inverseJoinColumns = @JoinColumn(name = "contact_id"))
-    private Set<Contact> other_contacts;
+    private Set<Contact> otherContacts;
 
     @OneToMany(cascade = CascadeType.ALL,
             fetch = FetchType.LAZY,
-            mappedBy = "ticket_id")
+            mappedBy = "ticketId")
     private Set<Comment> comments = new HashSet<>();
 }
