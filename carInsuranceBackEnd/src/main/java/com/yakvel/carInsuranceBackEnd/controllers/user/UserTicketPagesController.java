@@ -10,6 +10,7 @@ import com.yakvel.carInsuranceBackEnd.repositories.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -61,7 +62,7 @@ public class UserTicketPagesController {
         if (ticket == null) {
             return ResponseEntity.badRequest().body("Ticket does not exist");
         } else if (ticket.getTicketOwner().getId() != person.getId()) {
-            return ResponseEntity.badRequest().body("This ticket does not belong to current user");
+            return new ResponseEntity<>("This ticket does not belong to current user", HttpStatus.FORBIDDEN);
         }
         return ResponseEntity.ok(ticket);
     }
@@ -85,7 +86,7 @@ public class UserTicketPagesController {
         if (ticket == null) {
             return ResponseEntity.badRequest().body("Ticket does not exist");
         } else if (ticket.getTicketOwner().getId() != person.getId()) {
-            return ResponseEntity.badRequest().body("This ticket does not belong to current user");
+            return new ResponseEntity<>("This ticket does not belong to current user", HttpStatus.FORBIDDEN);
         }
 
         boolean isDeleted = photoHandlingService.deletePhotos(ticket, person);
