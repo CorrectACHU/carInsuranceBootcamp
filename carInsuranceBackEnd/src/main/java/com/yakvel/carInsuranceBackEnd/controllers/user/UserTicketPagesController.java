@@ -10,11 +10,14 @@ import com.yakvel.carInsuranceBackEnd.repositories.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -52,17 +55,48 @@ public class UserTicketPagesController {
         return ResponseEntity.ok(tickets);
     }
 
-    @PostMapping("/ticket")
+    @GetMapping("/ticket/{ticketId}")
+    public ResponseEntity getTicketDetails(@PathVariable long ticketId) {
+        Person person = (Person) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Ticket ticket = ticketRepository.findById(ticketId).orElse(null);
+        if (ticket == null) {
+            return ResponseEntity.badRequest().body("Ticket does not exist");
+        } else if (ticket.getTicketOwner().getId() != person.getId()) {
+            return new ResponseEntity<>("This ticket does not belong to current user", HttpStatus.FORBIDDEN);
+        }
+        return ResponseEntity.ok(ticket);
+    }
 
+    @PostMapping("/ticket")
     public ResponseEntity<String> createTicket(@RequestPart("ticket") TicketDto dto, @RequestPart("files") List<MultipartFile> photos) {
         Person person = (Person) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        String photoNames = photoHandlingService.photoHandling(dto, photos, person);
+        LocalDateTime dateOfIncident = dto.getDateOfIncident();
+        String photoNames = photoHandlingService.photoHandling(dateOfIncident, photos, person);
         Ticket ticket = prepareTicket(dto, person, photoNames);
         ticketRepository.save(ticket);
         return ResponseEntity.ok("Ticket was created!");
     }
 
+    @DeleteMapping("/ticket/{ticketId}")
+    public ResponseEntity<String> deleteTicket(@PathVariable long ticketId) throws IOException {
+        Person person = (Person) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Ticket ticket = ticketRepository.findById(ticketId).orElse(null);
+        if (ticket == null) {
+            return ResponseEntity.badRequest().body("Ticket does not exist");
+        } else if (ticket.getTicketOwner().getId() != person.getId()) {
+            return new ResponseEntity<>("This ticket does not belong to current user", HttpStatus.FORBIDDEN);
+        }
+
+        boolean isDeleted = photoHandlingService.deletePhotos(ticket, person);
+        if (isDeleted) {
+            ticketRepository.delete(ticket);
+            return ResponseEntity.ok("Ticket was deleted");
+        } else {
+            return ResponseEntity.badRequest().body("Ticket was not deleted");
+        }
+    }
     public Ticket prepareTicket(TicketDto dto, Person person, String photoNames) {
         Ticket ticket = ticketMapper.toEntity(dto);
         ticket.getVehicleCondition().setPhotoFileNames(photoNames);
