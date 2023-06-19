@@ -28,6 +28,7 @@ public class Ticket {
     @EqualsAndHashCode.Include
     private long id;
     private LocalDateTime dateOfIncident;
+    private String insuranceCompany;
 
     @ManyToOne
     @JoinColumn(name="person_id", nullable=false)

@@ -23,13 +23,12 @@ public class TicketMapper implements ItemMapper<TicketDto, Ticket>{
 
     @Override
     public TicketDto toDto(Ticket ticket) {
-        Person ticketOwner = ticket.getTicketOwner();
-        ticketOwner.setPassword("");
         return TicketDto
                 .builder()
                 .id(ticket.getId())
+                .insuranceCompany(ticket.getInsuranceCompany())
                 .dateOfIncident(ticket.getDateOfIncident())
-                .ticketOwner(ticketOwner)
+                .ticketOwner(ticket.getTicketOwner())
                 .currentManager(ticket.getCurrentManager())
                 .currentEstimator(ticket.getCurrentEstimator())
                 .ticketStatus(ticket.getTicketStatus())

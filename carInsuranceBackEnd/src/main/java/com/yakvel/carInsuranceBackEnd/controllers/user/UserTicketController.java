@@ -98,11 +98,11 @@ public class UserTicketController {
             return ResponseEntity.badRequest().body("Ticket was not deleted");
         }
     }
-    public Ticket prepareTicket(TicketDto dto, Person person, String photoNames) {
+    public Ticket prepareTicket(TicketDto dto, Person user, String photoNames) {
         Ticket ticket = ticketMapper.toEntity(dto);
-        person.setPassword(null);
+        ticket.setInsuranceCompany(user.getInsuranceCompany());
         ticket.getVehicleCondition().setPhotoFileNames(photoNames);
-        ticket.setTicketOwner(person);
+        ticket.setTicketOwner(user);
         ticket.setTicketStatus(TicketStatus.NEW);
         return ticket;
     }

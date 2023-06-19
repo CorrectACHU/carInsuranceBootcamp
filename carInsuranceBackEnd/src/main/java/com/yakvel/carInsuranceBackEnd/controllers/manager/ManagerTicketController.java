@@ -20,8 +20,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/manager")
@@ -46,13 +47,10 @@ public class ManagerTicketController {
     }
 
     @GetMapping("/tickets")
-    public ResponseEntity<Set<TicketDto>> getCurrentInsuranceTickets() {
+    public ResponseEntity<List<Ticket>> getCurrentInsuranceTickets() {
         Person manager = (Person) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Set<TicketDto> tickets = ticketRepository.findAll()
-                .stream()
-                .filter(ticket -> ticket.getTicketOwner().getInsuranceCompany().equals(manager.getInsuranceCompany()))
-                .map(ticket -> ticketMapper.toDto(ticket))
-                .collect(Collectors.toSet());
+        List<Ticket> tickets = ticketRepository.findByInsuranceCompany(manager.getInsuranceCompany());
+
         return ResponseEntity.ok(tickets);
     }
 
@@ -61,8 +59,8 @@ public class ManagerTicketController {
         Person manager = (Person) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Ticket ticket = ticketRepository.findById(ticketId).orElse(null);
 
-        ResponseEntity<String> checkAnswer = checkTicket(manager, ticket);
-        if (checkAnswer!=null) {return checkAnswer;}
+        Optional<ResponseEntity<String>> checkAnswer = checkTicketOwnership(manager, ticket);
+        if (checkAnswer.isPresent()) {return checkAnswer.get();}
         TicketDto ticketDto = ticketMapper.toDto(ticket);
 
         return ResponseEntity.ok(ticketDto);
@@ -73,8 +71,8 @@ public class ManagerTicketController {
         Person manager = (Person) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Ticket ticket = ticketRepository.findById(ticketId).orElse(null);
 
-        ResponseEntity<String> checkAnswer = checkTicket(manager, ticket);
-        if (checkAnswer!=null) {return checkAnswer;}
+        Optional<ResponseEntity<String>> checkAnswer = checkTicketOwnership(manager, ticket);
+        if (checkAnswer.isPresent()) {return checkAnswer.get();}
 
         mergeTicket(dto, ticket,manager);
         ticketRepository.save(ticket);
@@ -86,8 +84,8 @@ public class ManagerTicketController {
         Person manager = (Person) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Ticket ticket = ticketRepository.findById(ticketId).orElse(null);
 
-        ResponseEntity<String> checkAnswer = checkTicket(manager, ticket);
-        if (checkAnswer!=null) {return checkAnswer;}
+        Optional<ResponseEntity<String>> checkAnswer = checkTicketOwnership(manager, ticket);
+        if (checkAnswer.isPresent()) {return checkAnswer.get();}
 
         Comment comment = prepareComment(dto, manager, ticket);
         commentRepository.save(comment);
@@ -98,28 +96,28 @@ public class ManagerTicketController {
         Person manager = (Person) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Comment comment = commentRepository.findById(commentId).orElse(null);
 
-        ResponseEntity<String> checkAnswer = checkComment(manager, comment);
-        if (checkAnswer!=null) {return checkAnswer;}
+        Optional<ResponseEntity<String>> checkAnswer = checkCommentOwnership(manager, comment);
+        if (checkAnswer.isPresent()) {return checkAnswer.get();}
 
         commentRepository.delete(comment);
         return ResponseEntity.ok("Comment was deleted!");
     }
 
-    private static ResponseEntity<String> checkTicket(Person manager, Ticket ticket) {
+    private static Optional<ResponseEntity<String>> checkTicketOwnership(Person manager, Ticket ticket) {
         if (ticket == null) {
-            return ResponseEntity.badRequest().body("Ticket does not exist");
+            return Optional.of(ResponseEntity.badRequest().body("Ticket does not exist"));
         } else if (!ticket.getTicketOwner().getInsuranceCompany().equals(manager.getInsuranceCompany())) {
-            return new ResponseEntity<>("This ticket does not belong to current manager", HttpStatus.FORBIDDEN);
+            return Optional.of(new ResponseEntity<>("This ticket does not belong to current manager", HttpStatus.FORBIDDEN));
         }
-        return null;
+        return Optional.empty();
     }
-    private static ResponseEntity<String> checkComment(Person manager, Comment comment) {
+    private static Optional<ResponseEntity<String>> checkCommentOwnership(Person manager, Comment comment) {
         if (comment == null) {
-            return ResponseEntity.badRequest().body("Comment does not exist");
+            return Optional.of(ResponseEntity.badRequest().body("Comment does not exist"));
         } else if (comment.getCommentOwner().getId() != manager.getId()) {
-            return new ResponseEntity<>("This comment does not belong to current manager", HttpStatus.FORBIDDEN);
+            return Optional.of(new ResponseEntity<>("This comment does not belong to current manager", HttpStatus.FORBIDDEN));
         }
-        return null;
+        return Optional.empty();
     }
 
     private static Set<Contact> mergeContacts(TicketManagerDto dto, Ticket ticket) {
