@@ -25,6 +25,7 @@ public class TicketDto {
     private VehicleCondition vehicleCondition;
     private Set<EstimatedPart> estimatedParts;
     private OtherCharge otherCharge;
-    private Set<Contact> otherContacts;
+    private Set<Contact> otherContacts ;
+    private Set<Supplement> supplements;
     private Set<Comment> comments;
 }

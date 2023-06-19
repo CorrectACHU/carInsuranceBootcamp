@@ -1,5 +1,6 @@
 package com.yakvel.carInsuranceBackEnd.controllers.user;
 
+import com.yakvel.carInsuranceBackEnd.controllers.user.service.PersonDto;
 import com.yakvel.carInsuranceBackEnd.controllers.user.service.PhotoHandlingService;
 import com.yakvel.carInsuranceBackEnd.controllers.user.service.TicketDto;
 import com.yakvel.carInsuranceBackEnd.enums.TicketStatus;
@@ -16,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,10 +28,11 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
 @Log4j2
-public class UserTicketPagesController {
+public class UserTicketController {
     @Autowired
     private PhotoHandlingService photoHandlingService;
-
+    @Autowired
+    private ItemMapper<PersonDto,Person> personMapper;
     @Autowired
     private ItemMapper<TicketDto, Ticket> ticketMapper;
     @Autowired
@@ -47,9 +50,7 @@ public class UserTicketPagesController {
         Set<TicketDto> tickets = ticketRepository
                 .findAll()
                 .stream()
-                .filter(ticket -> {
-            return ticket.getTicketOwner().getId() == person.getId();
-        })
+                .filter(ticket -> ticket.getTicketOwner().getId() == person.getId())
                 .map(ticket -> ticketMapper.toDto(ticket))
                 .collect(Collectors.toSet());
         return ResponseEntity.ok(tickets);
@@ -99,6 +100,7 @@ public class UserTicketPagesController {
     }
     public Ticket prepareTicket(TicketDto dto, Person person, String photoNames) {
         Ticket ticket = ticketMapper.toEntity(dto);
+        person.setPassword(null);
         ticket.getVehicleCondition().setPhotoFileNames(photoNames);
         ticket.setTicketOwner(person);
         ticket.setTicketStatus(TicketStatus.NEW);
