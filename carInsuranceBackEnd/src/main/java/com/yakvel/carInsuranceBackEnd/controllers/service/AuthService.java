@@ -2,18 +2,26 @@ package com.yakvel.carInsuranceBackEnd.controllers.service;
 
 import com.yakvel.carInsuranceBackEnd.jwt.JwtService;
 import com.yakvel.carInsuranceBackEnd.models.Person;
+import com.yakvel.carInsuranceBackEnd.models.Role;
 import com.yakvel.carInsuranceBackEnd.repositories.PersonRepository;
 import com.yakvel.carInsuranceBackEnd.repositories.RoleRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.security.sasl.AuthenticationException;
+import java.util.Collection;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class AuthService {
     private final PersonRepository userRepo;
     private final RoleRepository roleRepository;
@@ -36,14 +44,17 @@ public class AuthService {
         }
     }
 
-    public String login(AuthenticationRequest request) {
+    public List<String> login(AuthenticationRequest request) {
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                 request.getEmail(), request.getPassword()
         );
-        authManager.authenticate(
+        Authentication authenticate = authManager.authenticate(
                 authentication
         );
 
-        return jwtService.generateToken(authentication.getPrincipal().toString());
+        Person principal = (Person) authenticate.getPrincipal();
+        String role = principal.getRole().getRole();
+
+        return List.of(jwtService.generateToken(authentication.getPrincipal().toString()), role);
     }
 }

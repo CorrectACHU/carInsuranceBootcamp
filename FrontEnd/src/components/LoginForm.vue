@@ -51,8 +51,8 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const form = ref(false)
-const email = ref('')
-const password = ref('')
+const email = ref('user2@mail.ru')
+const password = ref('fasdD1!d')
 const loading = ref(false)
 const isSuccess = ref(false)
 const isError = ref(false)
@@ -88,14 +88,31 @@ const submit = async () => {
       }),
       credentials: 'include'
     })
+    if (response.status === 403) {
+      alert.value = true
+      message.value = 'User with this email and password does not exist'
+      return
+    }
+
+    const res = await response.json()
+    console.log(response.status)
 
     if (response.ok) {
       isSuccess.value = true
       isError.value = false
-      router.push('/')
-    } else if (response.status === 403) {
-      alert.value = true
-      message.value = 'User with this email and password does not exist'
+      switch (res.role) {
+        case 'USER':
+          router.push('/user')
+          break
+        case 'MANAGER':
+          router.push('/manager')
+          break
+        case 'ESTIMATOR':
+          router.push('/estimator')
+          break
+        default:
+          return
+      }
     }
   } catch (error) {
     alert.value = true
