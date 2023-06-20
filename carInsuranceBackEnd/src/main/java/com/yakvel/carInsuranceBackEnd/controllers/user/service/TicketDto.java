@@ -16,6 +16,7 @@ import java.util.Set;
 @Data
 public class TicketDto {
     private Long id;
+    private String insuranceCompany;
     private LocalDateTime dateOfIncident;
     private Person ticketOwner;
     private Person currentManager;
@@ -25,6 +26,7 @@ public class TicketDto {
     private VehicleCondition vehicleCondition;
     private Set<EstimatedPart> estimatedParts;
     private OtherCharge otherCharge;
-    private Set<Contact> otherContacts;
+    private Set<Contact> otherContacts ;
+    private Set<Supplement> supplements;
     private Set<Comment> comments;
 }

@@ -1,11 +1,10 @@
 package com.yakvel.carInsuranceBackEnd.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.yakvel.carInsuranceBackEnd.enums.TicketStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -18,12 +17,18 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Ticket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private long id;
     private LocalDateTime dateOfIncident;
+    private String insuranceCompany;
 
     @ManyToOne
     @JoinColumn(name="person_id", nullable=false)
@@ -51,12 +56,15 @@ public class Ticket {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "other_charge_id", referencedColumnName = "id")
     private OtherCharge otherCharge;
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "tickets_contacts",
             joinColumns = @JoinColumn(name = "ticket_id"),
             inverseJoinColumns = @JoinColumn(name = "contact_id"))
     private Set<Contact> otherContacts;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "ticketId")
+    private Set<Supplement> supplements;
 
     @OneToMany(cascade = CascadeType.ALL,
             fetch = FetchType.LAZY,

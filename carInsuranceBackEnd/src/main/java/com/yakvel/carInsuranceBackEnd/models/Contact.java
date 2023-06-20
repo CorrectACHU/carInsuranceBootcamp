@@ -1,9 +1,9 @@
 package com.yakvel.carInsuranceBackEnd.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -14,9 +14,15 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Contact {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private long id;
 
     private String firstName;
@@ -29,6 +35,8 @@ public class Contact {
     @JoinColumn(name = "contact_id")
     private Set<Address> addresses;
     private String notes;
+
+    @JsonBackReference
     @ManyToMany(mappedBy = "otherContacts")
     private Set<Ticket> tickets;
 

@@ -29,7 +29,7 @@ public class SecurityConf {
                 registry.addMapping("/**")
                         .allowedOrigins("http://localhost:5173")
                         .allowCredentials(true)
-                        .allowedMethods("GET", "POST", "PATCH", "DELETE");
+                        .allowedMethods("GET", "POST", "PUT", "DELETE");
             }
         };
     }
@@ -41,6 +41,7 @@ public class SecurityConf {
                 .authorizeRequests()
                 .antMatchers("/api/v1/user/**").hasAuthority("USER")
                 .antMatchers("/api/v1/manager/**").hasAuthority("MANAGER")
+                .antMatchers("/api/v1/estimator/**").hasAuthority("ESTIMATOR")
                 .antMatchers("/api/auth/**", "/api/v1/").permitAll()
                 .anyRequest().authenticated()
                 .and()
