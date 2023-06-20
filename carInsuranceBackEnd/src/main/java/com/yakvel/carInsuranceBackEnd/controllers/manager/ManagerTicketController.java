@@ -2,13 +2,12 @@ package com.yakvel.carInsuranceBackEnd.controllers.manager;
 
 import com.yakvel.carInsuranceBackEnd.controllers.manager.dto.CommentDto;
 import com.yakvel.carInsuranceBackEnd.controllers.manager.dto.TicketManagerDto;
-import com.yakvel.carInsuranceBackEnd.controllers.user.service.TicketDto;
+import com.yakvel.carInsuranceBackEnd.controllers.user.dto.TicketDto;
 import com.yakvel.carInsuranceBackEnd.mappers.ItemMapper;
-import com.yakvel.carInsuranceBackEnd.models.Comment;
-import com.yakvel.carInsuranceBackEnd.models.Contact;
-import com.yakvel.carInsuranceBackEnd.models.Person;
-import com.yakvel.carInsuranceBackEnd.models.Ticket;
+import com.yakvel.carInsuranceBackEnd.models.*;
 import com.yakvel.carInsuranceBackEnd.repositories.CommentRepository;
+import com.yakvel.carInsuranceBackEnd.repositories.PersonRepository;
+import com.yakvel.carInsuranceBackEnd.repositories.RoleRepository;
 import com.yakvel.carInsuranceBackEnd.repositories.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -39,6 +38,11 @@ public class ManagerTicketController {
     private ItemMapper<TicketDto, Ticket> ticketMapper;
     @Autowired
     private TicketRepository ticketRepository;
+    @Autowired
+    private PersonRepository personRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
 
     @GetMapping("/")
@@ -101,6 +105,14 @@ public class ManagerTicketController {
 
         commentRepository.delete(comment);
         return ResponseEntity.ok("Comment was deleted!");
+    }
+
+
+    @GetMapping("/estimators")
+    public ResponseEntity getListOfAvailableEstimators() {
+        Role role = roleRepository.findByRole("ESTIMATOR");
+        List<Person> estimators = personRepository.findByRole(role).orElse(null);
+        return (estimators!=null) ? ResponseEntity.ok(estimators) : ResponseEntity.badRequest().body("There are no estimators available at this time");
     }
 
     private static Optional<ResponseEntity<String>> checkTicketOwnership(Person manager, Ticket ticket) {

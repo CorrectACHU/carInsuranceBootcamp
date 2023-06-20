@@ -1,8 +1,8 @@
 package com.yakvel.carInsuranceBackEnd.controllers.user;
 
-import com.yakvel.carInsuranceBackEnd.controllers.user.service.PersonDto;
+import com.yakvel.carInsuranceBackEnd.controllers.user.dto.PersonDto;
 import com.yakvel.carInsuranceBackEnd.controllers.user.service.PhotoHandlingService;
-import com.yakvel.carInsuranceBackEnd.controllers.user.service.TicketDto;
+import com.yakvel.carInsuranceBackEnd.controllers.user.dto.TicketDto;
 import com.yakvel.carInsuranceBackEnd.enums.TicketStatus;
 import com.yakvel.carInsuranceBackEnd.mappers.ItemMapper;
 import com.yakvel.carInsuranceBackEnd.models.Person;
@@ -17,7 +17,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;

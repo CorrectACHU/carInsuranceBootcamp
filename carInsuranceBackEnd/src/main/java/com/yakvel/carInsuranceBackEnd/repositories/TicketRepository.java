@@ -1,5 +1,6 @@
 package com.yakvel.carInsuranceBackEnd.repositories;
 
+import com.yakvel.carInsuranceBackEnd.models.Person;
 import com.yakvel.carInsuranceBackEnd.models.Ticket;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
@@ -11,4 +12,5 @@ import java.util.function.Function;
 
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
     List<Ticket> findByInsuranceCompany(String insuranceCompany);
+    List<Ticket> findByCurrentEstimator(Person currentEstimator);
 }

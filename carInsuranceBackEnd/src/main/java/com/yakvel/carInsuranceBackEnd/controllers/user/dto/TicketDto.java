@@ -1,4 +1,4 @@
-package com.yakvel.carInsuranceBackEnd.controllers.user.service;
+package com.yakvel.carInsuranceBackEnd.controllers.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -27,6 +27,6 @@ public class TicketDto {
     private Set<EstimatedPart> estimatedParts;
     private OtherCharge otherCharge;
     private Set<Contact> otherContacts ;
-    private Set<Supplement> supplements;
+    private Supplement supplement;
     private Set<Comment> comments;
 }
