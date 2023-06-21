@@ -44,7 +44,7 @@ public class AuthService {
         }
     }
 
-    public List<String> login(AuthenticationRequest request) {
+    public AuthDto login(AuthenticationRequest request) {
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                 request.getEmail(), request.getPassword()
         );
@@ -55,6 +55,14 @@ public class AuthService {
         Person principal = (Person) authenticate.getPrincipal();
         String role = principal.getRole().getRole();
 
-        return List.of(jwtService.generateToken(authentication.getPrincipal().toString()), role);
+        return getDto(authentication, role);
+    }
+
+    private AuthDto getDto(UsernamePasswordAuthenticationToken authentication, String role) {
+        return AuthDto.builder()
+                .message(role + " was logged in!")
+                .role(role)
+                .token(jwtService.generateToken(authentication.getPrincipal().toString()))
+                .build();
     }
 }

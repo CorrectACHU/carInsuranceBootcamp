@@ -36,13 +36,10 @@ public class AuthController {
     public ResponseEntity<AuthDto> login(
             @RequestBody AuthenticationRequest request
     ) {
-        List<String> authServiceAnswer = authService.login(request);
-
-        String token = authServiceAnswer.get(0);
-        String role = authServiceAnswer.get(1);
-
+        AuthDto dto = authService.login(request);
+        String token = dto.getToken();
         ResponseCookie cookie = getResponseCookie(token);
-        AuthDto dto = new AuthDto(role + " has logged in", role);
+
         return ResponseEntity
                 .ok()
                 .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, "Set-Cookie")

@@ -51,8 +51,8 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const form = ref(false)
-const email = ref('user2@mail.ru')
-const password = ref('fasdD1!d')
+const email = ref('')
+const password = ref('')
 const loading = ref(false)
 const isSuccess = ref(false)
 const isError = ref(false)
