@@ -9,8 +9,10 @@ import org.springframework.data.repository.query.FluentQuery;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.LongUnaryOperator;
 
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
     List<Ticket> findByInsuranceCompany(String insuranceCompany);
     List<Ticket> findByCurrentEstimator(Person currentEstimator);
+    List<Ticket> findByTicketOwner(Person ticketOwner);
 }

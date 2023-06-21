@@ -3,6 +3,7 @@ package com.yakvel.carInsuranceBackEnd.controllers.estimator;
 
 import com.yakvel.carInsuranceBackEnd.controllers.estimator.dto.TicketEstimatorDto;
 import com.yakvel.carInsuranceBackEnd.controllers.manager.dto.CommentDto;
+import com.yakvel.carInsuranceBackEnd.controllers.service.TicketService;
 import com.yakvel.carInsuranceBackEnd.controllers.user.dto.TicketDto;
 import com.yakvel.carInsuranceBackEnd.mappers.ItemMapper;
 import com.yakvel.carInsuranceBackEnd.models.Comment;
@@ -14,7 +15,6 @@ import com.yakvel.carInsuranceBackEnd.repositories.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +39,8 @@ public class EstimatorTicketController {
     private CommentRepository commentRepository;
     @Autowired
     private ItemMapper<CommentDto, Comment> commentMapper;
+    @Autowired
+    private TicketService ticketService;
 
     @GetMapping("/tickets")
     public ResponseEntity<List<Ticket>> getCurrentEstimatorTickets() {
@@ -52,7 +54,7 @@ public class EstimatorTicketController {
     public ResponseEntity getTicketDetails(@PathVariable long ticketId) {
         Person estimator = (Person) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Ticket ticket = ticketRepository.findById(ticketId).orElse(null);
-        Optional<ResponseEntity<String>> checkAnswer = checkTicketEstimatorOwnership(estimator,ticket);
+        Optional<ResponseEntity<String>> checkAnswer = ticketService.checkTicketOwnership(estimator, ticket);
         if (checkAnswer.isPresent()) {return checkAnswer.get();}
 
         TicketDto ticketDto = ticketMapper.toDto(ticket);
@@ -64,7 +66,7 @@ public class EstimatorTicketController {
         Person estimator = (Person) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Ticket ticket = ticketRepository.findById(ticketId).orElse(null);
 
-        Optional<ResponseEntity<String>> checkAnswer = checkTicketEstimatorOwnership(estimator, ticket);
+        Optional<ResponseEntity<String>> checkAnswer = ticketService.checkTicketOwnership(estimator, ticket);
         if (checkAnswer.isPresent()) {return checkAnswer.get();}
 
         mergeTicket(dto, ticket);
@@ -77,7 +79,7 @@ public class EstimatorTicketController {
         Person manager = (Person) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Ticket ticket = ticketRepository.findById(ticketId).orElse(null);
 
-        Optional<ResponseEntity<String>> checkAnswer = checkTicketEstimatorOwnership(manager, ticket);
+        Optional<ResponseEntity<String>> checkAnswer = ticketService.checkTicketOwnership(manager, ticket);
         if (checkAnswer.isPresent()) {return checkAnswer.get();}
 
         Comment comment = prepareComment(dto, manager, ticket);
@@ -89,31 +91,11 @@ public class EstimatorTicketController {
         Person estimator = (Person) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Comment comment = commentRepository.findById(commentId).orElse(null);
 
-        Optional<ResponseEntity<String>> checkAnswer = checkCommentEstimatorOwnership(estimator, comment);
+        Optional<ResponseEntity<String>> checkAnswer = ticketService.checkCommentOwnership(estimator, comment);
         if (checkAnswer.isPresent()) {return checkAnswer.get();}
 
         commentRepository.delete(comment);
         return ResponseEntity.ok("Comment was deleted!");
-    }
-
-
-    //////////////////////////
-    private static Optional<ResponseEntity<String>> checkTicketEstimatorOwnership(Person estimator, Ticket ticket) {
-        if (ticket == null) {
-            return Optional.of(ResponseEntity.badRequest().body("Ticket does not exist"));
-        } else if (ticket.getCurrentEstimator().getId() != estimator.getId()) {
-            return Optional.of(new ResponseEntity<>("This ticket does not belong to current estimator", HttpStatus.FORBIDDEN));
-        }
-        return Optional.empty();
-    }
-
-    private static Optional<ResponseEntity<String>> checkCommentEstimatorOwnership(Person estimator, Comment comment) {
-        if (comment == null) {
-            return Optional.of(ResponseEntity.badRequest().body("Comment does not exist"));
-        } else if (comment.getCommentOwner().getId() != estimator.getId()) {
-            return Optional.of(new ResponseEntity<>("This comment does not belong to current person", HttpStatus.FORBIDDEN));
-        }
-        return Optional.empty();
     }
 
     private static Set<Contact> mergeContacts(TicketEstimatorDto dto, Ticket ticket) {
