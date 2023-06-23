@@ -13,7 +13,11 @@ const router = createRouter({
     },
     {
       path: '/user',
+<<<<<<< HEAD
       component: () => import('@/views/user/UserMainPage.vue')
+=======
+      component: () => import('@/views/user/UserHomePage.vue')
+>>>>>>> main
     },
   ]
 })

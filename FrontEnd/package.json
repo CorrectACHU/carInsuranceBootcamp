@@ -13,6 +13,9 @@
     "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false"
   },
   "dependencies": {
+    "@jamescoyle/vue-icon": "^0.1.2",
+    "@mdi/font": "^7.2.96",
+    "@mdi/js": "^7.2.96",
     "pinia": "^2.0.36",
     "roboto-fontface": "*",
     "vue": "^3.3.2",
