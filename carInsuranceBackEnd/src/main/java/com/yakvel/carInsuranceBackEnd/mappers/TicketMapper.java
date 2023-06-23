@@ -1,7 +1,6 @@
 package com.yakvel.carInsuranceBackEnd.mappers;
 
-import com.yakvel.carInsuranceBackEnd.controllers.user.service.TicketDto;
-import com.yakvel.carInsuranceBackEnd.models.Person;
+import com.yakvel.carInsuranceBackEnd.controllers.user.dto.TicketDto;
 import com.yakvel.carInsuranceBackEnd.models.Ticket;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +16,7 @@ public class TicketMapper implements ItemMapper<TicketDto, Ticket>{
                 .estimatedParts(ticketDto.getEstimatedParts())
                 .otherCharge(ticketDto.getOtherCharge())
                 .otherContacts(ticketDto.getOtherContacts())
-                .supplements(ticketDto.getSupplements())
+                .supplement(ticketDto.getSupplement())
                 .build();
     }
 
@@ -37,7 +36,7 @@ public class TicketMapper implements ItemMapper<TicketDto, Ticket>{
                 .estimatedParts(ticket.getEstimatedParts())
                 .otherCharge(ticket.getOtherCharge())
                 .otherContacts(ticket.getOtherContacts())
-                .supplements(ticket.getSupplements())
+                .supplement(ticket.getSupplement())
                 .comments(ticket.getComments())
                 .build();
     }

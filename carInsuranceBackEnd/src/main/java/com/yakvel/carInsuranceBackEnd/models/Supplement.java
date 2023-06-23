@@ -19,11 +19,8 @@ public class Supplement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @ManyToOne
-    @JoinColumn(name = "supplements")
-    private Ticket ticketId;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "estimated_parts_ids")
     private Set<EstimatedPart> estimatedParts;
 

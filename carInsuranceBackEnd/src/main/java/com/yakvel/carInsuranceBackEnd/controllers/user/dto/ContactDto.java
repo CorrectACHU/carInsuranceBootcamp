@@ -1,4 +1,4 @@
-package com.yakvel.carInsuranceBackEnd.controllers.user.service;
+package com.yakvel.carInsuranceBackEnd.controllers.user.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
