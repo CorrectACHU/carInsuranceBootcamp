@@ -2,7 +2,7 @@
   <div>
     <AppHeader />
     <div class="d-flex align-start flex-wrap justify-space-around bodySize bg-light-blue-lighten-5">
-      <v-list class="bg-light-blue-lighten-5" v-for="item in fetchData" :key="item.id">
+      <v-list class="bg-light-blue-lighten-5" v-for="item in listOfTickets" :key="item.id">
         <v-card
           minWidth=30dvw
           minHeight=20dvh
@@ -35,7 +35,7 @@ const getToken = () => {
 }
 
 const token = getToken()
-const fetchData: CardInGeneral[] = reactive([])
+const listOfTickets: CardInGeneral[] = reactive([])
 const getListOfTickets = async () => {
   try {
     const response = await fetch('http://localhost:8080/api/v1/user/tickets', {
@@ -50,7 +50,7 @@ const getListOfTickets = async () => {
     }
     const data = await response.json()
     data.forEach((ticket: CardInGeneral) => {
-      fetchData.push(ticket)
+      listOfTickets.push(ticket)
     })
   } catch (error) {
     throw new Error('ssss')
