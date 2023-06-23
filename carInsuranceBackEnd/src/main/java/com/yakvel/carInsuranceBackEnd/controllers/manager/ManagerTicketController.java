@@ -118,23 +118,6 @@ public class ManagerTicketController {
         return (estimators!=null) ? ResponseEntity.ok(estimators) : ResponseEntity.badRequest().body("There are no estimators available at this time");
     }
 
-//    private static Optional<ResponseEntity<String>> checkTicketOwnership(Person manager, Ticket ticket) {
-//        if (ticket == null) {
-//            return Optional.of(ResponseEntity.badRequest().body("Ticket does not exist"));
-//        } else if (!ticket.getTicketOwner().getInsuranceCompany().equals(manager.getInsuranceCompany())) {
-//            return Optional.of(new ResponseEntity<>("This ticket does not belong to current manager", HttpStatus.FORBIDDEN));
-//        }
-//        return Optional.empty();
-//    }
-//    private static Optional<ResponseEntity<String>> checkCommentOwnership(Person manager, Comment comment) {
-//        if (comment == null) {
-//            return Optional.of(ResponseEntity.badRequest().body("Comment does not exist"));
-//        } else if (comment.getCommentOwner().getId() != manager.getId()) {
-//            return Optional.of(new ResponseEntity<>("This comment does not belong to current manager", HttpStatus.FORBIDDEN));
-//        }
-//        return Optional.empty();
-//    }
-
     private static Set<Contact> mergeContacts(TicketManagerDto dto, Ticket ticket) {
         Set<Contact> contacts = new HashSet<Contact>();
         if (ticket.getOtherContacts()!=null) {contacts.addAll(ticket.getOtherContacts());}
