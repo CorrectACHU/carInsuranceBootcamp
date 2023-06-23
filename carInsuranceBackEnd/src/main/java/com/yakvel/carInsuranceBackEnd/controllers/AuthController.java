@@ -33,7 +33,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthDto> login(
+    public ResponseEntity<String> login(
             @RequestBody AuthenticationRequest request
     ) {
         AuthDto dto = authService.login(request);
@@ -44,7 +44,7 @@ public class AuthController {
                 .ok()
                 .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, "Set-Cookie")
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body(dto);
+                .body(dto.getRole());
     }
 
     private static ResponseCookie getResponseCookie(String token) {

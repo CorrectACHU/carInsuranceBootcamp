@@ -60,7 +60,6 @@ public class AuthService {
 
     private AuthDto getDto(UsernamePasswordAuthenticationToken authentication, String role) {
         return AuthDto.builder()
-                .message(role + " was logged in!")
                 .role(role)
                 .token(jwtService.generateToken(authentication.getPrincipal().toString()))
                 .build();

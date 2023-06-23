@@ -94,13 +94,13 @@ const submit = async () => {
       return
     }
 
-    const res = await response.json()
+    const res = await response.text()
     console.log(response.status)
 
     if (response.ok) {
       isSuccess.value = true
       isError.value = false
-      switch (res.role) {
+      switch (res) {
         case 'USER':
           router.push('/user')
           break
