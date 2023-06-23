@@ -1,6 +1,6 @@
 package com.yakvel.carInsuranceBackEnd.mappers;
 
-import com.yakvel.carInsuranceBackEnd.controllers.user.service.ContactDto;
+import com.yakvel.carInsuranceBackEnd.controllers.user.dto.ContactDto;
 import com.yakvel.carInsuranceBackEnd.models.Contact;
 import org.springframework.stereotype.Component;
 

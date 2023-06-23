@@ -49,7 +49,7 @@ public class Ticket {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "vehicle_condition_id", referencedColumnName = "id")
     private VehicleCondition vehicleCondition;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "estimated_parts_ids")
     private Set<EstimatedPart> estimatedParts;
 
@@ -63,8 +63,9 @@ public class Ticket {
             inverseJoinColumns = @JoinColumn(name = "contact_id"))
     private Set<Contact> otherContacts;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "ticketId")
-    private Set<Supplement> supplements;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "supplement_id", referencedColumnName = "id")
+    private Supplement supplement;
 
     @OneToMany(cascade = CascadeType.ALL,
             fetch = FetchType.LAZY,

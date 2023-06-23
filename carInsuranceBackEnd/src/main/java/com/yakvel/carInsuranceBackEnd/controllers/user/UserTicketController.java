@@ -1,8 +1,9 @@
 package com.yakvel.carInsuranceBackEnd.controllers.user;
 
-import com.yakvel.carInsuranceBackEnd.controllers.user.service.PersonDto;
+import com.yakvel.carInsuranceBackEnd.controllers.service.TicketService;
+import com.yakvel.carInsuranceBackEnd.controllers.user.dto.PersonDto;
 import com.yakvel.carInsuranceBackEnd.controllers.user.service.PhotoHandlingService;
-import com.yakvel.carInsuranceBackEnd.controllers.user.service.TicketDto;
+import com.yakvel.carInsuranceBackEnd.controllers.user.dto.TicketDto;
 import com.yakvel.carInsuranceBackEnd.enums.TicketStatus;
 import com.yakvel.carInsuranceBackEnd.mappers.ItemMapper;
 import com.yakvel.carInsuranceBackEnd.models.Person;
@@ -17,12 +18,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -37,22 +36,15 @@ public class UserTicketController {
     private ItemMapper<TicketDto, Ticket> ticketMapper;
     @Autowired
     private TicketRepository ticketRepository;
-
-    @GetMapping("/")
-    public String getUsers() {
-        return "This is user view";
-    }
+    @Autowired
+    private TicketService ticketService;
 
     @GetMapping("/tickets")
-    public ResponseEntity<Set<TicketDto>> getUserTickets() {
+    public ResponseEntity<List<Ticket>> getUserTickets() {
         Person person = (Person) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        Set<TicketDto> tickets = ticketRepository
-                .findAll()
-                .stream()
-                .filter(ticket -> ticket.getTicketOwner().getId() == person.getId())
-                .map(ticket -> ticketMapper.toDto(ticket))
-                .collect(Collectors.toSet());
+        List<Ticket> tickets = ticketRepository.findByTicketOwner(person);
+
         return ResponseEntity.ok(tickets);
     }
 
@@ -60,11 +52,8 @@ public class UserTicketController {
     public ResponseEntity getTicketDetails(@PathVariable long ticketId) {
         Person person = (Person) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Ticket ticket = ticketRepository.findById(ticketId).orElse(null);
-        if (ticket == null) {
-            return ResponseEntity.badRequest().body("Ticket does not exist");
-        } else if (ticket.getTicketOwner().getId() != person.getId()) {
-            return new ResponseEntity<>("This ticket does not belong to current user", HttpStatus.FORBIDDEN);
-        }
+        Optional<ResponseEntity<String>> checkAnswer = ticketService.checkTicketOwnership(person, ticket);
+        if (checkAnswer.isPresent()) {return checkAnswer.get();}
         return ResponseEntity.ok(ticket);
     }
 
@@ -84,11 +73,9 @@ public class UserTicketController {
         Person person = (Person) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         Ticket ticket = ticketRepository.findById(ticketId).orElse(null);
-        if (ticket == null) {
-            return ResponseEntity.badRequest().body("Ticket does not exist");
-        } else if (ticket.getTicketOwner().getId() != person.getId()) {
-            return new ResponseEntity<>("This ticket does not belong to current user", HttpStatus.FORBIDDEN);
-        }
+
+        Optional<ResponseEntity<String>> checkAnswer = ticketService.checkTicketOwnership(person, ticket);
+        if (checkAnswer.isPresent()) {return checkAnswer.get();}
 
         boolean isDeleted = photoHandlingService.deletePhotos(ticket, person);
         if (isDeleted) {

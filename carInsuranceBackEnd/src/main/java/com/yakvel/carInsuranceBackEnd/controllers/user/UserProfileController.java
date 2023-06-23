@@ -1,9 +1,9 @@
 package com.yakvel.carInsuranceBackEnd.controllers.user;
 
 
-import com.yakvel.carInsuranceBackEnd.controllers.user.service.ContactDto;
-import com.yakvel.carInsuranceBackEnd.controllers.user.service.PersonChangePassRequest;
-import com.yakvel.carInsuranceBackEnd.controllers.user.service.PersonDto;
+import com.yakvel.carInsuranceBackEnd.controllers.user.dto.ContactDto;
+import com.yakvel.carInsuranceBackEnd.controllers.user.dto.PersonChangePassRequestDto;
+import com.yakvel.carInsuranceBackEnd.controllers.user.dto.PersonDto;
 import com.yakvel.carInsuranceBackEnd.mappers.ItemMapper;
 import com.yakvel.carInsuranceBackEnd.models.Contact;
 import com.yakvel.carInsuranceBackEnd.models.Person;
@@ -47,7 +47,7 @@ public class UserProfileController {
 
 
     @PutMapping("/profile/change-pass")
-    public ResponseEntity changePersonPassword(@RequestBody PersonChangePassRequest request) {
+    public ResponseEntity changePersonPassword(@RequestBody PersonChangePassRequestDto request) {
         Person person = (Person) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         boolean isPassCorrect = checkActualPasswordMatch(request.getOldPassword(), person.getPassword());

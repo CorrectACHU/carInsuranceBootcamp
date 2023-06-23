@@ -1,4 +1,4 @@
-package com.yakvel.carInsuranceBackEnd.controllers.user.service;
+package com.yakvel.carInsuranceBackEnd.controllers.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PersonChangePassRequest {
+public class PersonChangePassRequestDto {
     private String oldPassword;
     private String newPassword;
 }

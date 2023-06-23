@@ -1,19 +1,20 @@
-package com.yakvel.carInsuranceBackEnd.controllers.manager;
+package com.yakvel.carInsuranceBackEnd.controllers.estimator;
 
+
+import com.yakvel.carInsuranceBackEnd.controllers.estimator.dto.TicketEstimatorDto;
 import com.yakvel.carInsuranceBackEnd.controllers.manager.dto.CommentDto;
-import com.yakvel.carInsuranceBackEnd.controllers.manager.dto.TicketManagerDto;
 import com.yakvel.carInsuranceBackEnd.controllers.service.TicketService;
 import com.yakvel.carInsuranceBackEnd.controllers.user.dto.TicketDto;
 import com.yakvel.carInsuranceBackEnd.mappers.ItemMapper;
-import com.yakvel.carInsuranceBackEnd.models.*;
+import com.yakvel.carInsuranceBackEnd.models.Comment;
+import com.yakvel.carInsuranceBackEnd.models.Contact;
+import com.yakvel.carInsuranceBackEnd.models.Person;
+import com.yakvel.carInsuranceBackEnd.models.Ticket;
 import com.yakvel.carInsuranceBackEnd.repositories.CommentRepository;
-import com.yakvel.carInsuranceBackEnd.repositories.PersonRepository;
-import com.yakvel.carInsuranceBackEnd.repositories.RoleRepository;
 import com.yakvel.carInsuranceBackEnd.repositories.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -25,63 +26,50 @@ import java.util.Optional;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/api/v1/manager")
+@RequestMapping("/api/v1/estimator")
 @RequiredArgsConstructor
 @Log4j2
-public class ManagerTicketController {
+public class EstimatorTicketController {
 
-    @Autowired
-    private ItemMapper<CommentDto, Comment> commentMapper;
-    @Autowired
-    private CommentRepository commentRepository;
-    
-    @Autowired
-    private ItemMapper<TicketDto, Ticket> ticketMapper;
     @Autowired
     private TicketRepository ticketRepository;
     @Autowired
-    private PersonRepository personRepository;
-
+    private ItemMapper<TicketDto,Ticket> ticketMapper;
     @Autowired
-    private RoleRepository roleRepository;
+    private CommentRepository commentRepository;
+    @Autowired
+    private ItemMapper<CommentDto, Comment> commentMapper;
     @Autowired
     private TicketService ticketService;
 
-
-    @GetMapping("/")
-    public String getUsers() {
-        return "This is manager view";
-    }
-
     @GetMapping("/tickets")
-    public ResponseEntity<List<Ticket>> getCurrentInsuranceTickets() {
-        Person manager = (Person) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List<Ticket> tickets = ticketRepository.findByInsuranceCompany(manager.getInsuranceCompany());
+    public ResponseEntity<List<Ticket>> getCurrentEstimatorTickets() {
+        Person estimator = (Person) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<Ticket> tickets = ticketRepository.findByCurrentEstimator(estimator);
 
         return ResponseEntity.ok(tickets);
     }
 
     @GetMapping("/ticket/{ticketId}")
-    public ResponseEntity getManagerTicketDetails(@PathVariable long ticketId) {
-        Person manager = (Person) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public ResponseEntity getTicketDetails(@PathVariable long ticketId) {
+        Person estimator = (Person) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Ticket ticket = ticketRepository.findById(ticketId).orElse(null);
-
-        Optional<ResponseEntity<String>> checkAnswer = ticketService.checkTicketOwnership(manager, ticket);
+        Optional<ResponseEntity<String>> checkAnswer = ticketService.checkTicketOwnership(estimator, ticket);
         if (checkAnswer.isPresent()) {return checkAnswer.get();}
-        TicketDto ticketDto = ticketMapper.toDto(ticket);
 
+        TicketDto ticketDto = ticketMapper.toDto(ticket);
         return ResponseEntity.ok(ticketDto);
     }
 
     @PutMapping("/ticket/{ticketId}")
-    public ResponseEntity<String> updateTicketFromManager(@PathVariable long ticketId, @RequestBody TicketManagerDto dto) {
-        Person manager = (Person) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public ResponseEntity<String> updateTicketFromManager(@PathVariable long ticketId, @RequestBody TicketEstimatorDto dto) {
+        Person estimator = (Person) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Ticket ticket = ticketRepository.findById(ticketId).orElse(null);
 
-        Optional<ResponseEntity<String>> checkAnswer = ticketService.checkTicketOwnership(manager, ticket);
+        Optional<ResponseEntity<String>> checkAnswer = ticketService.checkTicketOwnership(estimator, ticket);
         if (checkAnswer.isPresent()) {return checkAnswer.get();}
 
-        mergeTicket(dto, ticket,manager);
+        mergeTicket(dto, ticket);
         ticketRepository.save(ticket);
         return ResponseEntity.ok("Ticket was updated!");
     }
@@ -100,42 +88,33 @@ public class ManagerTicketController {
     }
     @DeleteMapping("/ticket/comment/{commentId}")
     public ResponseEntity<String> deleteCommentToTicket(@PathVariable long commentId) {
-        Person manager = (Person) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Person estimator = (Person) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Comment comment = commentRepository.findById(commentId).orElse(null);
 
-        Optional<ResponseEntity<String>> checkAnswer = ticketService.checkCommentOwnership(manager, comment);
+        Optional<ResponseEntity<String>> checkAnswer = ticketService.checkCommentOwnership(estimator, comment);
         if (checkAnswer.isPresent()) {return checkAnswer.get();}
 
         commentRepository.delete(comment);
         return ResponseEntity.ok("Comment was deleted!");
     }
 
-
-    @GetMapping("/estimators")
-    public ResponseEntity getListOfAvailableEstimators() {
-        Role role = roleRepository.findByRole("ESTIMATOR");
-        List<Person> estimators = personRepository.findByRole(role).orElse(null);
-        return (estimators!=null) ? ResponseEntity.ok(estimators) : ResponseEntity.badRequest().body("There are no estimators available at this time");
-    }
-
-    private static Set<Contact> mergeContacts(TicketManagerDto dto, Ticket ticket) {
-        Set<Contact> contacts = new HashSet<Contact>();
+    private static Set<Contact> mergeContacts(TicketEstimatorDto dto, Ticket ticket) {
+        Set<Contact> contacts = new HashSet<>();
         if (ticket.getOtherContacts()!=null) {contacts.addAll(ticket.getOtherContacts());}
         if (dto.getOtherContacts()!=null) {contacts.addAll(dto.getOtherContacts());}
         return contacts;
     }
 
-    private static void mergeTicket(TicketManagerDto dto, Ticket ticket, Person manager) {
-        ticket.setCurrentManager(manager);
-        ticket.setCurrentEstimator(dto.getCurrentEstimator());
-        ticket.setOtherCharge(dto.getOtherCharge());
+    private static void mergeTicket(TicketEstimatorDto dto, Ticket ticket) {
+        ticket.setSupplement(dto.getSupplement());
+        ticket.setEstimatedParts(dto.getEstimatedParts());
         ticket.setOtherContacts(mergeContacts(dto, ticket));
         ticket.setTicketStatus(dto.getTicketStatus());
     }
 
-    private Comment prepareComment(CommentDto dto, Person manager, Ticket ticket) {
+    private Comment prepareComment(CommentDto dto, Person estimator, Ticket ticket) {
         Comment comment = commentMapper.toEntity(dto);
-        comment.setCommentOwner(manager);
+        comment.setCommentOwner(estimator);
         comment.setTicketId(ticket);
         comment.setCreatedDate(LocalDateTime.now());
         return comment;
