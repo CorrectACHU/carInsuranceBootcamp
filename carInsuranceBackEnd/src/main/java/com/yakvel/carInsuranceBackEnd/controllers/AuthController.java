@@ -38,18 +38,20 @@ public class AuthController {
     ) {
         AuthDto dto = authService.login(request);
         String token = dto.getToken();
-        ResponseCookie cookie = getResponseCookie(token);
+        ResponseCookie cookie = getResponseCookie(token,"token");
+        ResponseCookie role = getResponseCookie(dto.getRole(),"role");
 
         return ResponseEntity
                 .ok()
                 .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, "Set-Cookie")
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .header(HttpHeaders.SET_COOKIE, role.toString())
                 .body(dto.getRole());
     }
 
-    private static ResponseCookie getResponseCookie(String token) {
+    private static ResponseCookie getResponseCookie(String token, String fromName) {
         return ResponseCookie
-                .from("token", token)
+                .from(fromName, token)
                 .path("/")
                 .maxAge(86400)
                 .build();
