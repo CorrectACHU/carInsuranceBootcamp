@@ -3,7 +3,7 @@ import router from "@/router"
 export const redirectByPersonRole = (role:string) => {
     switch (role) {
     case 'USER':
-      router.push('/user')
+      router.push({name:'userTickets'})
       break
     case 'MANAGER':
       router.push('/manager')

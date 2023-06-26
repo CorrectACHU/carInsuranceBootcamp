@@ -16,12 +16,12 @@ import { authStore } from '@/stores/store'
 const personStore = authStore()
 
 const logout = () => {
-  personStore.changeIsLoggedInToFalse()
+  personStore.setIsLoggedIn(false)
   cleanCookie()
-  router.push('/login')
+  router.push({ name: 'login' })
 }
 const toMainPage = () => {
-  router.push('/')
+  router.push({ name: 'mainPage' })
 }
 </script>
 

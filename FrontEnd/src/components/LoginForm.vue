@@ -99,7 +99,7 @@ const submit = async () => {
     if (response.ok) {
       isSuccess.value = true
       isError.value = false
-      personStore.changeIsLoggedInToTrue()
+      personStore.setIsLoggedIn(true)
       personStore.setRole(res)
       redirectByPersonRole(personStore.role)
     }

@@ -1,23 +1,35 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { reactive, ref } from "vue";
+import type { CardInGeneral } from "./modelInterfaces";
 
 export const authStore = defineStore("login", ()=>{
 
     const isLoggedIn =  ref(false)
     const role = ref('')
 
-    function changeIsLoggedInToTrue() {
-        isLoggedIn.value = true
-    }
-
-    function changeIsLoggedInToFalse() {
-        isLoggedIn.value = false
+    function setIsLoggedIn(bool:boolean) {
+        isLoggedIn.value = bool
     }
 
     function setRole(personRole:string) {
         role.value = personRole
     }
-    return {isLoggedIn, changeIsLoggedInToTrue,changeIsLoggedInToFalse, role, setRole}
+    return {isLoggedIn,setIsLoggedIn, role, setRole}
 })
 
+
+export const ticketListStore = defineStore("tickets", () => {
+    const tickets: CardInGeneral[] = reactive([])
+
+    function setTickets(ticketList:Array<CardInGeneral>) {
+        tickets.length = 0
+        ticketList.forEach((ticket:CardInGeneral)=>tickets.push(ticket))
+    }
+
+    function deleteTicket(id:number) {
+        setTickets(tickets.filter((item) => item.id !== id))
+    }
+
+    return {tickets, setTickets, deleteTicket}
+})
 

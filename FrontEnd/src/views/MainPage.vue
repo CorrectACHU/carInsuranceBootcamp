@@ -1,7 +1,5 @@
 <template>
-    <div>
-
-    </div>
+  <div></div>
 </template>
 
 <script setup lang="ts">
@@ -13,16 +11,12 @@ import { getRoleFromCookie } from '@/helpers/service'
 const personStore = authStore()
 
 if (getTokenFromCookie() === '') {
-  router.push('/login')
+  router.push({ name: 'login' })
 } else {
-  personStore.isLoggedIn = true
+  personStore.setIsLoggedIn(true)
   const role = (personStore.role = getRoleFromCookie())
-  console.log(role)
-
   redirectByPersonRole(role)
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
