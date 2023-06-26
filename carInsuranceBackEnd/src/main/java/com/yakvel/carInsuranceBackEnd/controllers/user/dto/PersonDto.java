@@ -4,6 +4,7 @@ package com.yakvel.carInsuranceBackEnd.controllers.user.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.yakvel.carInsuranceBackEnd.models.Address;
+import com.yakvel.carInsuranceBackEnd.models.Company;
 import com.yakvel.carInsuranceBackEnd.models.Phone;
 import lombok.Builder;
 import lombok.Data;
@@ -16,7 +17,7 @@ import java.util.Set;
 @Data
 public class PersonDto {
     private String email;
-    private String insuranceCompany;
+    private Company company;
     private String firstName;
     private String lastName;
     private Set<Phone> phones;

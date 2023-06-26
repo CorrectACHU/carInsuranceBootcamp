@@ -12,7 +12,6 @@ import com.yakvel.carInsuranceBackEnd.repositories.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -87,7 +86,7 @@ public class UserTicketController {
     }
     public Ticket prepareTicket(TicketDto dto, Person user, String photoNames) {
         Ticket ticket = ticketMapper.toEntity(dto);
-        ticket.setInsuranceCompany(user.getInsuranceCompany());
+        ticket.setInsuranceCompany(user.getCompany());
         ticket.getVehicleCondition().setPhotoFileNames(photoNames);
         ticket.setTicketOwner(user);
         ticket.setTicketStatus(TicketStatus.NEW);

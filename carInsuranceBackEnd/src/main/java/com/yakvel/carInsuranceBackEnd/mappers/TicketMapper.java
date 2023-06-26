@@ -25,7 +25,7 @@ public class TicketMapper implements ItemMapper<TicketDto, Ticket>{
         return TicketDto
                 .builder()
                 .id(ticket.getId())
-                .insuranceCompany(ticket.getInsuranceCompany())
+                .company(ticket.getInsuranceCompany())
                 .dateOfIncident(ticket.getDateOfIncident())
                 .ticketOwner(ticket.getTicketOwner())
                 .currentManager(ticket.getCurrentManager())

@@ -25,7 +25,7 @@ public class TicketService {
         }
         switch (currentPerson.getRole().getRole()) {
             case "MANAGER":
-                return (!currentTicket.getTicketOwner().getInsuranceCompany().equals(currentPerson.getInsuranceCompany())) ? negativeResponse : positiveResponse;
+                return (!currentTicket.getTicketOwner().getCompany().equals(currentPerson.getCompany())) ? negativeResponse : positiveResponse;
             case "ESTIMATOR":
                 return (currentTicket.getCurrentEstimator().getId() != currentPerson.getId()) ? negativeResponse : positiveResponse;
             case "USER":
