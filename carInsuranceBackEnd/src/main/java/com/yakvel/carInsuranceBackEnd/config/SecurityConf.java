@@ -28,8 +28,9 @@ public class SecurityConf {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOrigins("http://localhost:5173")
+                        .maxAge(36000)
                         .allowCredentials(true)
-                        .allowedMethods("GET", "POST", "PUT", "DELETE");
+                        .allowedMethods("*");
             }
         };
     }
@@ -37,7 +38,7 @@ public class SecurityConf {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
         http
-                .csrf().disable()
+                .csrf().disable().cors().and()
                 .authorizeRequests()
                 .antMatchers("/api/v1/user/**").hasAuthority("USER")
                 .antMatchers("/api/v1/manager/**").hasAuthority("MANAGER")

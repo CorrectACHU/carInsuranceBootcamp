@@ -46,9 +46,10 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { authStore } from '@/stores/store'
+import { redirectByPersonRole } from '@/helpers/service'
 
-const router = useRouter()
+const personStore = authStore()
 
 const form = ref(false)
 const email = ref('')
@@ -57,6 +58,8 @@ const loading = ref(false)
 const isSuccess = ref(false)
 const isError = ref(false)
 const showPassword = ref(false)
+const alert = ref(false)
+const message = ref('')
 
 const rules = {
   required: (value: string) => !!value || 'Field is required',
@@ -72,9 +75,6 @@ const rules = {
   ]
 }
 
-const alert = ref(false)
-const message = ref('')
-
 const submit = async () => {
   try {
     const response = await fetch('http://localhost:8080/api/auth/login', {
@@ -88,31 +88,20 @@ const submit = async () => {
       }),
       credentials: 'include'
     })
-    if (response.status === 403) {
+    if (response.status === 403 || response.status === 401) {
       alert.value = true
       message.value = 'User with this email and password does not exist'
       return
     }
 
     const res = await response.text()
-    console.log(response.status)
 
     if (response.ok) {
       isSuccess.value = true
       isError.value = false
-      switch (res) {
-        case 'USER':
-          router.push('/user')
-          break
-        case 'MANAGER':
-          router.push('/manager')
-          break
-        case 'ESTIMATOR':
-          router.push('/estimator')
-          break
-        default:
-          return
-      }
+      personStore.setIsLoggedIn(true)
+      personStore.setRole(res)
+      redirectByPersonRole(personStore.role)
     }
   } catch (error) {
     alert.value = true
