@@ -1,7 +1,10 @@
 export interface TicketDetails {
     id:number,
-    ticketOwner:Person
     dateOfIncident:string,
+    InsuranceCompany:Company
+    ticketOwner:Person,
+    currentManager:Person,
+    currentEstimator:Person,
     ticketStatus: string,
 }
 
@@ -32,4 +35,8 @@ interface Address {
     state:string,
     zip:string,
     addressInline:string
+}
+
+interface Company {
+    
 }
