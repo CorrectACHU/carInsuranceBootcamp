@@ -10,6 +10,7 @@ public class TicketMapper implements ItemMapper<TicketDto, Ticket>{
     public Ticket toEntity(TicketDto ticketDto) {
         return Ticket
                 .builder()
+                .insuranceCompany(ticketDto.getInsuranceCompany())
                 .dateOfIncident(ticketDto.getDateOfIncident())
                 .vehicleInfo(ticketDto.getVehicleInfo())
                 .vehicleCondition(ticketDto.getVehicleCondition())
@@ -25,7 +26,7 @@ public class TicketMapper implements ItemMapper<TicketDto, Ticket>{
         return TicketDto
                 .builder()
                 .id(ticket.getId())
-                .company(ticket.getInsuranceCompany())
+                .insuranceCompany(ticket.getInsuranceCompany())
                 .dateOfIncident(ticket.getDateOfIncident())
                 .ticketOwner(ticket.getTicketOwner())
                 .currentManager(ticket.getCurrentManager())

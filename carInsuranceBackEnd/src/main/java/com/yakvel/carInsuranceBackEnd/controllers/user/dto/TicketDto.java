@@ -16,7 +16,7 @@ import java.util.Set;
 @Data
 public class TicketDto {
     private Long id;
-    private Company company;
+    private Company insuranceCompany;
     private LocalDateTime dateOfIncident;
     private Person ticketOwner;
     private Person currentManager;

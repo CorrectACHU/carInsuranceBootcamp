@@ -30,7 +30,7 @@ public class Ticket {
     private LocalDateTime dateOfIncident;
 
     @ManyToOne
-    @JoinColumn(name="company_id", nullable = false)
+    @JoinColumn(name="company_id")
     private Company insuranceCompany;
 
     @ManyToOne

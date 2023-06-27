@@ -57,7 +57,7 @@ public class UserTicketController {
     }
 
     @PostMapping("/ticket")
-    public ResponseEntity<String> createTicket(@RequestPart("ticket") TicketDto dto, @RequestPart("files") List<MultipartFile> photos) {
+    public ResponseEntity<String> createTicket(@RequestPart("ticket") TicketDto dto, @RequestPart("images") List<MultipartFile> photos) {
         Person person = (Person) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         LocalDateTime dateOfIncident = dto.getDateOfIncident();
@@ -86,9 +86,9 @@ public class UserTicketController {
     }
     public Ticket prepareTicket(TicketDto dto, Person user, String photoNames) {
         Ticket ticket = ticketMapper.toEntity(dto);
-        ticket.setInsuranceCompany(user.getCompany());
         ticket.getVehicleCondition().setPhotoFileNames(photoNames);
         ticket.setTicketOwner(user);
+        ticket.setInsuranceCompany(user.getCompany());
         ticket.setTicketStatus(TicketStatus.NEW);
         return ticket;
     }
