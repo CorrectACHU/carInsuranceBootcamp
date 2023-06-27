@@ -19,7 +19,7 @@ public class PersonMapper implements ItemMapper<PersonDto,Person>{
         if (contactInfo != null) {
             return PersonDto.builder()
                     .email(person.getEmail())
-                    .insuranceCompany(person.getInsuranceCompany())
+                    .company(person.getCompany())
                     .firstName(contactInfo.getFirstName())
                     .lastName(contactInfo.getLastName())
                     .phones(contactInfo.getPhones())

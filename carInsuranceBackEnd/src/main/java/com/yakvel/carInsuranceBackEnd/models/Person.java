@@ -33,7 +33,8 @@ public class Person implements UserDetails {
     @ManyToOne(cascade = CascadeType.ALL)
     private Role role;
 
-    private String insuranceCompany;
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Company company;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
