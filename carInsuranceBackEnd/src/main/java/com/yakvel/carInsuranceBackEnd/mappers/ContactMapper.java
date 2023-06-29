@@ -17,6 +17,7 @@ public class ContactMapper implements ItemMapper<ContactDto, Contact>{
                 .email(request.getEmail())
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
+                .contactType(request.getContactType())
                 .phones(request.getPhones())
                 .addresses(request.getAddresses())
                 .notes(request.getNotes())

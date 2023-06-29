@@ -43,7 +43,7 @@ public class SecurityConf {
                 .antMatchers("/api/v1/user/**").hasAuthority("USER")
                 .antMatchers("/api/v1/manager/**").hasAuthority("MANAGER")
                 .antMatchers("/api/v1/estimator/**").hasAuthority("ESTIMATOR")
-                .antMatchers("/api/auth/**", "/api/v1/", "/images/**").permitAll()
+                .antMatchers("/api/auth/**", "/api/v1/", "/api/v1/images/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

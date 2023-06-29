@@ -120,6 +120,7 @@ public class ManagerTicketController {
     private static Set<Contact> mergeContacts(TicketManagerDto dto, Ticket ticket) {
         Set<Contact> contacts = new HashSet<Contact>();
         if (ticket.getOtherContacts()!=null) {contacts.addAll(ticket.getOtherContacts());}
+        dto.getOtherContacts().stream().forEach((item)-> System.out.println(item.getFirstName()));
         if (dto.getOtherContacts()!=null) {contacts.addAll(dto.getOtherContacts());}
         return contacts;
     }
