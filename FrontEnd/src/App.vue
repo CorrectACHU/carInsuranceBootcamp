@@ -9,3 +9,9 @@
 <script setup lang="ts">
 
 </script>
+
+<style>
+main {
+  min-height: 80dvh;
+}
+</style>

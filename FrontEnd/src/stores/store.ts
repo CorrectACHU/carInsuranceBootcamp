@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { reactive, ref } from "vue";
-import type { CardInGeneral } from "./modelInterfaces";
+import type { CardInGeneral } from "./TicketInList";
 
 export const authStore = defineStore("login", ()=>{
 

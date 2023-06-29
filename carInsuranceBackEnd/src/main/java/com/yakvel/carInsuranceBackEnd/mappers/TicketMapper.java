@@ -10,6 +10,7 @@ public class TicketMapper implements ItemMapper<TicketDto, Ticket>{
     public Ticket toEntity(TicketDto ticketDto) {
         return Ticket
                 .builder()
+                .insuranceCompany(ticketDto.getInsuranceCompany())
                 .dateOfIncident(ticketDto.getDateOfIncident())
                 .vehicleInfo(ticketDto.getVehicleInfo())
                 .vehicleCondition(ticketDto.getVehicleCondition())

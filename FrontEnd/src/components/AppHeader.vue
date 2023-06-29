@@ -11,10 +11,10 @@
 
 <script setup lang="ts">
 import { cleanCookie } from '@/helpers/service'
-import router from '@/router'
 import { authStore } from '@/stores/store'
+import { useRouter } from 'vue-router'
 const personStore = authStore()
-
+const router = useRouter()
 const logout = () => {
   personStore.setIsLoggedIn(false)
   cleanCookie()

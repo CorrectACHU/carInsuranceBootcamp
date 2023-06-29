@@ -1,4 +1,7 @@
-import router from "@/router"
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
 
 export const redirectByPersonRole = (role:string) => {
     switch (role) {
