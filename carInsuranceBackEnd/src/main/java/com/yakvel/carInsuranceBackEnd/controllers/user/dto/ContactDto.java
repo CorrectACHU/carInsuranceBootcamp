@@ -18,6 +18,7 @@ public class ContactDto {
     private String email;
     private String firstName;
     private String lastName;
+    private String contactType;
     private Set<Phone> phones;
     private Set<Address> addresses;
     private String notes;

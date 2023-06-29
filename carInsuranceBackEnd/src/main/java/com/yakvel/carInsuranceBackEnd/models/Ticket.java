@@ -46,7 +46,7 @@ public class Ticket {
     private Person currentEstimator;
     @Enumerated(EnumType.STRING)
     private TicketStatus ticketStatus;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="vehicle_id")
     private VehicleInformation vehicleInfo;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

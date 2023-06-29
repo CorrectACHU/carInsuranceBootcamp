@@ -15,7 +15,7 @@ public class CarInsuranceBackEndApplication implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
         // Register resource handler for images
-        registry.addResourceHandler("/images/**").addResourceLocations("classpath:/static/photo/")
+        registry.addResourceHandler("api/v1/images/**").addResourceLocations("classpath:/static/photo/")
                 .setCacheControl(CacheControl.maxAge(2, TimeUnit.HOURS).cachePublic());
     }
 
